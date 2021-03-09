@@ -4,14 +4,12 @@ import { BoardProps } from 'boardgame.io/react';
 type MovesProviderProps = {
   children: React.ReactNode;
   moves: BoardProps['moves'];
-  events: BoardProps['events'];
   undo: BoardProps['undo'];
   redo: BoardProps['redo'];
 };
 const MovesContext = React.createContext<
   | {
       moves: BoardProps['moves'];
-      events: BoardProps['events'];
       undo: BoardProps['undo'];
       redo: BoardProps['redo'];
     }
@@ -19,13 +17,13 @@ const MovesContext = React.createContext<
 >(undefined);
 export function MovesProvider({
   moves,
-  events,
   undo,
   redo,
   children,
 }: MovesProviderProps) {
   return (
-    <MovesContext.Provider value={{ moves, events, undo, redo }}>
+    <MovesContext.Provider value={{ moves,
+      undo, redo }}>
       {children}
     </MovesContext.Provider>
   );

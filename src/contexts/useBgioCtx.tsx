@@ -2,24 +2,24 @@ import * as React from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { usePlayerID } from './usePlayerID';
 
-type CtxProviderProps = {
+type BgioCtxProviderProps = {
   children: React.ReactNode;
   ctx: BoardProps['ctx'];
 };
-type ModifiedCtx = {
+type BgioCtxValue = {
   ctx: BoardProps['ctx'] & {
     isMyTurn: boolean;
     isGameover: boolean;
   };
 };
-const CtxContext = React.createContext<ModifiedCtx | undefined>(undefined);
+const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined);
 
-export function CtxProvider({ ctx, children }: CtxProviderProps) {
+export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const { playerID } = usePlayerID();
   const isMyTurn: boolean = ctx.currentPlayer === playerID;
   const isGameover: boolean = Boolean(ctx.gameover);
   return (
-    <CtxContext.Provider
+    <BgioCtxContext.Provider
       value={{
         ctx: {
           ...ctx,
@@ -29,14 +29,14 @@ export function CtxProvider({ ctx, children }: CtxProviderProps) {
       }}
     >
       {children}
-    </CtxContext.Provider>
+    </BgioCtxContext.Provider>
   );
 }
 
-export function useCtx() {
-  const context = React.useContext(CtxContext);
+export function useBgioCtx() {
+  const context = React.useContext(BgioCtxContext);
   if (context === undefined) {
-    throw new Error('useCtx must be used within a CtxProvider');
+    throw new Error('useBgioCtx must be used within a BgioCtxProvider');
   }
   return context;
 }

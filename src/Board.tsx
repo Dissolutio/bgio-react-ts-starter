@@ -4,7 +4,8 @@ import {
   PlayerIDProvider,
   GProvider,
   MovesProvider,
-  CtxProvider,
+  BgioEventsProvider,
+  BgioCtxProvider,
   UIContextProvider,
 } from 'contexts';
 import { ExampleUI } from './components/ExampleUI';
@@ -20,13 +21,15 @@ export const Board: React.FunctionComponent<BoardProps> = ({
   return (
     <PlayerIDProvider playerID={playerID}>
       <GProvider G={G}>
-        <CtxProvider ctx={ctx}>
-          <MovesProvider events={events} moves={moves} undo={undo} redo={redo}>
+        <BgioCtxProvider ctx={ctx}>
+          <MovesProvider  moves={moves} undo={undo} redo={redo}>
+            <BgioEventsProvider events={events}>
             <UIContextProvider>
               <ExampleUI />
             </UIContextProvider>
+            </BgioEventsProvider>
           </MovesProvider>
-        </CtxProvider>
+        </BgioCtxProvider>
       </GProvider>
     </PlayerIDProvider>
   );

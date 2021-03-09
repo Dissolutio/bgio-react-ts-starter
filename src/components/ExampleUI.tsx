@@ -1,4 +1,4 @@
-import { usePlayerID, useG, useCtx, useMoves } from 'contexts';
+import { usePlayerID, useG, useBgioCtx, useMoves, useBgioEvents } from 'contexts';
 
 export const ExampleUI = () => {
   const { playerID } = usePlayerID();
@@ -14,9 +14,10 @@ export const ExampleUI = () => {
 };
 
 const Buttons = () => {
-  const { ctx } = useCtx();
+  const { ctx } = useBgioCtx();
   const { isMyTurn } = ctx;
-  const { events, moves, undo, redo } = useMoves();
+  const { moves, undo, redo } = useMoves();
+  const { events } = useBgioEvents();
   const { endTurn } = events;
   const { increaseScore } = moves;
 

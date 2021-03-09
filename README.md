@@ -5,7 +5,7 @@ For now referred to as CRA and BGIO. It comes with some simple commands to get u
 
 ## Overview
 
-The Board component is what gets all the BGIO goodness as props. Our Board splits the props up into different contexts, now your underlying UI components can access them easily.
+The Board component receives [the BGIO API as props](https://boardgame.io/documentation/#/api/Client?id=board-props). Our Board splits the props up into different contexts, now your underlying UI components can access them easily, and hopefully without unnecessary re-renders. If you start to get performance issues, these contexts may need some fine tuning.
 
 The project also includes _react-router-dom_ already. See example of its use in the `LocalApp` component in `App.tsx`.
 

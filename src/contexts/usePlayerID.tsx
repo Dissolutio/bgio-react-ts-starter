@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 //🛠️ PLAYERID
 type PlayerIDProviderProps = { children: React.ReactNode; playerID: string };
@@ -10,8 +10,8 @@ export function PlayerIDProvider({
   playerID,
   children,
 }: PlayerIDProviderProps) {
-  if (playerID === '') {
-    playerID = 'observer';
+  if (playerID === "") {
+    playerID = "observer";
   }
   const belongsToPlayer = (thing: any): boolean => thing?.playerID === playerID;
   return (
@@ -20,10 +20,10 @@ export function PlayerIDProvider({
     </PlayerIDContext.Provider>
   );
 }
-export function usePlayerID() {
+export function useBgioClientInfo() {
   const context = React.useContext(PlayerIDContext);
   if (context === undefined) {
-    throw new Error('usePlayerID must be used within a PlayerIDProvider');
+    throw new Error("useBgioClientInfo must be used within a PlayerIDProvider");
   }
   return context;
 }

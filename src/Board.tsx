@@ -1,36 +1,72 @@
-import React from 'react';
-import { BoardProps } from 'boardgame.io/react';
+import React from "react";
+import { BoardProps } from "boardgame.io/react";
+import { ChatMessage } from "boardgame.io";
 import {
-  PlayerIDProvider,
-  GProvider,
-  MovesProvider,
+  BgioClientInfoProvider,
+  BgioGProvider,
+  BgioMovesProvider,
   BgioEventsProvider,
   BgioCtxProvider,
   UIContextProvider,
-} from 'contexts';
-import { ExampleUI } from './components/ExampleUI';
-export const Board: React.FunctionComponent<BoardProps> = ({
-  playerID,
-  G,
-  ctx,
-  moves,
-  events,
-  undo,
-  redo,
-}) => {
+  BgioChatProvider,
+} from "contexts";
+import { ExampleUI } from "./components/ExampleUI";
+
+export const Board: React.FunctionComponent<
+  BoardProps & { chatMessages?: ChatMessage[] }
+> = (props) => {
+  const {
+    // G
+    G,
+    // CTX
+    ctx,
+    // MOVES
+    moves,
+    undo,
+    redo,
+    // EVENTS
+    events,
+    reset,
+    // CHAT
+    sendChatMessage,
+    chatMessages = [],
+    // ALSO ON BOARD PROPS
+    playerID,
+    log,
+    matchID,
+    matchData,
+    isActive,
+    isMultiplayer,
+    isConnected,
+    credentials,
+  } = props;
   return (
-    <PlayerIDProvider playerID={playerID}>
-      <GProvider G={G}>
+    <BgioClientInfoProvider
+      playerID={playerID}
+      log={log}
+      matchID={matchID}
+      matchData={matchData}
+      isActive={isActive}
+      isMultiplayer={isMultiplayer}
+      isConnected={isConnected}
+      credentials={credentials}
+    >
+      <BgioGProvider G={G}>
         <BgioCtxProvider ctx={ctx}>
-          <MovesProvider  moves={moves} undo={undo} redo={redo}>
-            <BgioEventsProvider events={events}>
-            <UIContextProvider>
-              <ExampleUI />
-            </UIContextProvider>
+          <BgioMovesProvider moves={moves} undo={undo} redo={redo}>
+            <BgioEventsProvider reset={reset} events={events}>
+              <BgioChatProvider
+                chatMessages={chatMessages}
+                sendChatMessage={sendChatMessage}
+              >
+                <UIContextProvider>
+                  <ExampleUI />
+                </UIContextProvider>
+              </BgioChatProvider>
             </BgioEventsProvider>
-          </MovesProvider>
+          </BgioMovesProvider>
         </BgioCtxProvider>
-      </GProvider>
-    </PlayerIDProvider>
+      </BgioGProvider>
+    </BgioClientInfoProvider>
   );
 };

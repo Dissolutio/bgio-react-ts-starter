@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { BoardProps } from 'boardgame.io/react';
-import { usePlayerID } from './usePlayerID';
+import * as React from "react";
+import { BoardProps } from "boardgame.io/react";
+import { useBgioClientInfo } from "./useBgioClientInfo";
 
 type BgioCtxProviderProps = {
   children: React.ReactNode;
-  ctx: BoardProps['ctx'];
+  ctx: BoardProps["ctx"];
 };
 type BgioCtxValue = {
-  ctx: BoardProps['ctx'] & {
+  ctx: BoardProps["ctx"] & {
     isMyTurn: boolean;
     isGameover: boolean;
   };
@@ -15,7 +15,7 @@ type BgioCtxValue = {
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined);
 
 export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
-  const { playerID } = usePlayerID();
+  const { playerID } = useBgioClientInfo();
   const isMyTurn: boolean = ctx.currentPlayer === playerID;
   const isGameover: boolean = Boolean(ctx.gameover);
   return (
@@ -36,7 +36,7 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
 export function useBgioCtx() {
   const context = React.useContext(BgioCtxContext);
   if (context === undefined) {
-    throw new Error('useBgioCtx must be used within a BgioCtxProvider');
+    throw new Error("useBgioCtx must be used within a BgioCtxProvider");
   }
   return context;
 }

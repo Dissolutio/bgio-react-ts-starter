@@ -1,34 +1,20 @@
-import { usePlayerID, useG, useBgioCtx, useMoves, useBgioEvents } from 'contexts';
+import React from "react";
+import { useBgioClientInfo, useBgioG } from "contexts";
+import { ChatInput, ChatList } from "./Chat";
+import { Controls } from "./Controls";
 
 export const ExampleUI = () => {
-  const { playerID } = usePlayerID();
-  const { G } = useG();
+  const { playerID } = useBgioClientInfo();
+  const { G } = useBgioG();
   return (
     <div>
       <h1 style={{ margin: 0 }}>{`Player ${playerID}'s UI`}</h1>
       <p>{`Player 0 score: ${G.player0Score}`}</p>
       <p>{`Player 1 score: ${G.player1Score}`}</p>
-      <Buttons />
+      <Controls />
+      <h3>Chats</h3>
+      <ChatList />
+      <ChatInput />
     </div>
-  );
-};
-
-const Buttons = () => {
-  const { ctx } = useBgioCtx();
-  const { isMyTurn } = ctx;
-  const { moves, undo, redo } = useMoves();
-  const { events } = useBgioEvents();
-  const { endTurn } = events;
-  const { increaseScore } = moves;
-
-  return isMyTurn ? (
-    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-      <button onClick={undo}>UNDO</button>
-      <button onClick={redo}>REDO</button>
-      <button onClick={increaseScore}>Move: Increase Score</button>
-      <button onClick={() => endTurn()}>Event: End Turn</button>
-    </div>
-  ) : (
-    <div>NOT YOUR TURN</div>
   );
 };

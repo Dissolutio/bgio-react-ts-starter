@@ -1,4 +1,3 @@
-import React from "react";
 import { BoardProps } from "boardgame.io/react";
 import { ChatMessage } from "boardgame.io";
 import {
@@ -12,9 +11,9 @@ import {
 } from "contexts";
 import { ExampleUI } from "./components/ExampleUI";
 
-export const Board: React.FunctionComponent<
-  BoardProps & { chatMessages?: ChatMessage[] }
-> = (props) => {
+type MyBoardProps = BoardProps & { chatMessages?: ChatMessage[] };
+
+export function Board(props: MyBoardProps) {
   const {
     // G
     G,
@@ -69,4 +68,4 @@ export const Board: React.FunctionComponent<
       </BgioGProvider>
     </BgioClientInfoProvider>
   );
-};
+}

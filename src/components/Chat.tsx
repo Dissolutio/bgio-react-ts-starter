@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { useBgioClientInfo, useBgioChat } from "contexts";
 
 function generateChatID() {
@@ -44,16 +45,17 @@ export const ChatInput = () => {
 };
 
 export const ChatList = () => {
-  const { chatMessages } = useBgioChat();
-  const uniqueChatMessages = chatMessages.reduce((prev, curr) => {
-    if (prev.some((chat) => chat.id === curr.id)) {
-      return prev;
-    }
-    return [...prev, curr];
-  }, []);
+  const chatCtxVal = useBgioChat();
+  const chatMessages = _.uniqBy(chatCtxVal.chatMessages, "id");
+  // const uniqueChatMessages = chatMessages.reduce((prev, curr) => {
+  //   if (prev.some((chat) => chat.id === curr.id)) {
+  //     return prev;
+  //   }
+  //   return [...prev, curr];
+  // }, []);
   return (
     <ul style={{ listStyleType: "none" }}>
-      {uniqueChatMessages.map((chat) => {
+      {chatMessages.map((chat) => {
         const actualChat = chat.payload;
         const { id, sender, payload } = actualChat;
         return (

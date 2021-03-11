@@ -1,4 +1,3 @@
-import React from "react";
 import { useBgioClientInfo, useBgioG } from "contexts";
 import { ChatInput, ChatList } from "./Chat";
 import { Controls } from "./Controls";

@@ -9,9 +9,12 @@ export const myGame = {
     return myG;
   },
   moves: {
-    increaseScore: (G, ctx) => {
-      const { currentPlayer } = ctx;
-      G[`player${currentPlayer}Score`]++;
-    },
+    increaseScore,
   },
 };
+
+function increaseScore(G, ctx) {
+  const { currentPlayer } = ctx;
+  const currentScore = G.score[currentPlayer];
+  G.score[`${currentPlayer}`] = currentScore + 1;
+}

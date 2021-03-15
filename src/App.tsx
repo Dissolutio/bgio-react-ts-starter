@@ -5,7 +5,7 @@ import { Local, SocketIO } from "boardgame.io/multiplayer";
 import { myGame } from "./game/game";
 import { Board } from "./Board";
 import { Lobby } from "./Lobby";
-import { NewLobby } from "NewLobby";
+import { NewLobby } from "components/lobby/NewLobby";
 
 // Our app changes based on the npm script run, see package.json or README.md for more info
 // THREE OPTIONS:

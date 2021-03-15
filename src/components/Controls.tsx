@@ -11,7 +11,7 @@ export const Controls = () => {
     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
       <button onClick={undo}>UNDO</button>
       <button onClick={redo}>REDO</button>
-      <button onClick={increaseScore}>Move: Increase Score</button>
+      <button onClick={() => increaseScore()}>Move: Increase Score</button>
       <button onClick={() => endTurn()}>Event: End Turn</button>
       <button onClick={() => reset()}>Reset Game</button>
     </div>

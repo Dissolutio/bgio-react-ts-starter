@@ -1,10 +1,16 @@
 import React from "react";
 import _ from "lodash";
 import { LobbyClient } from "boardgame.io/client";
-
+import { MyGameState } from "./game/game";
 interface Props {
   serverAddress: string;
 }
+
+type MyGameCreateGameOptions = {
+  setupData: MyGameState;
+  numPlayers: number;
+  unlisted?: boolean;
+};
 
 export const NewLobby = (props: Props) => {
   const { serverAddress } = props;
@@ -49,12 +55,11 @@ export const NewLobby = (props: Props) => {
     }
   }
   // POST create match
-  async function createMatch(gameName: string, createGameOptions) {
-    const {
-      numPlayers = 2,
-      setupData = {},
-      unlisted = false,
-    } = createGameOptions;
+  async function createMatch(
+    gameName: string,
+    createGameOptions: MyGameCreateGameOptions
+  ) {
+    const { numPlayers, setupData, unlisted = false } = createGameOptions;
     const lobbyClient = lobbyClientRef.current;
     try {
       const response = await lobbyClient.createMatch(`${gameName}`, {
@@ -111,7 +116,7 @@ export const NewLobby = (props: Props) => {
         availableMatchesError={availableMatchesError}
         fetchAvailableGames={fetchAvailableGames}
       />
-      <CreateGameForm
+      <CreateMatchForm
         createMatch={createMatch}
         availableGames={availableGames}
         createMatchSuccess={createMatchSuccess}
@@ -121,7 +126,7 @@ export const NewLobby = (props: Props) => {
   );
 };
 
-function CreateGameForm({
+function CreateMatchForm({
   createMatch,
   availableGames,
   createMatchSuccess,
@@ -146,7 +151,8 @@ function CreateGameForm({
   const handleSubmit = (e) => {
     e.preventDefault();
     createMatch(gameSelect, {
-      setupData: { player0Score: 0, player1Score: 100 },
+      setupData: { score: { "0": 0, "1": 7 } },
+      numPlayers: 2,
     });
   };
   const createMatchGameSelectHtmlID = `create-match-game-select`;

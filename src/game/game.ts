@@ -1,9 +1,18 @@
+export type MyGameState = {
+  score: {
+    [playerID: string]: number;
+  };
+};
+
+export const defaultSetupData: MyGameState = {
+  score: { "0": 0, "1": 0 },
+};
+
 export const myGame = {
   name: "myGame",
   setup: (ctx, setupData) => {
     const myG = {
-      player0Score: 0,
-      player1Score: 0,
+      ...defaultSetupData,
       ...setupData,
     };
     return myG;

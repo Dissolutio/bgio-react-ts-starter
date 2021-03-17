@@ -1,17 +1,23 @@
 type Props = {
+  selectLabelText: string;
   availableGames: any[];
   selectedGame: string;
-  handleGameSelectChange: (e: any) => void;
+  handleSelectGameChange: (e: any) => void;
 };
 
 export const GameSelect = (props: Props) => {
-  const { availableGames, selectedGame, handleGameSelectChange } = props;
+  const {
+    availableGames,
+    selectedGame,
+    handleSelectGameChange,
+    selectLabelText,
+  } = props;
   const createMatchGameSelectHtmlID = `game-select`;
   return (
     <label htmlFor={createMatchGameSelectHtmlID}>
-      Choose game:
+      {`${selectLabelText}:`}
       <select
-        onChange={handleGameSelectChange}
+        onChange={handleSelectGameChange}
         value={selectedGame}
         id={createMatchGameSelectHtmlID}
       >

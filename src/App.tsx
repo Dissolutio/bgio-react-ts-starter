@@ -51,21 +51,18 @@ export const App = () => {
   } else {
     return (
       <BrowserRouter>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Old Lobby</Link>
-              </li>
-              <li>
-                <Link to="/new">New Lobby</Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Old Lobby</Link>
+            </li>
+            <li>
+              <Link to="/new">New Lobby</Link>
+            </li>
+          </ul>
+        </nav>
         <Switch>
           <Route path="/new">
-            <h1>NEW LOBBY</h1>
             <NewLobby serverAddress={serverAddress} />
           </Route>
           <Route exact path="/">

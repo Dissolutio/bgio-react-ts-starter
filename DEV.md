@@ -17,7 +17,7 @@ I am making my own Lobby, so it can be fully customizable
 
 ## Sub-Components
 
-- `CreateMatchForm` displays error/success on submit
+- `CreateMatchButton` displays error/success on submit
 
 - `GameSelect` select game from available games
 

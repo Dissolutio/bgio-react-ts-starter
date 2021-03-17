@@ -1,22 +1,28 @@
 import _ from "lodash";
+import { MatchListMiniItem } from "./MatchListItem";
 
 export function GameMatchList({
   gameName,
   availableMatches,
   availableMatchesError,
   fetchAvailableGames,
+  handleSelectMatch,
+  handleJoinSelectedMatch,
 }) {
+  const matches = _.uniqBy(availableMatches?.[gameName] ?? [], "matchID");
   return (
     <section>
       <h3>{`Available Matches for ${gameName}`}</h3>
-      <button onClick={() => fetchAvailableGames(gameName)}>
-        {`Refresh ${gameName} matches`}
-      </button>
+      <button onClick={() => fetchAvailableGames(gameName)}>{`Refresh`}</button>
       <MatchesError
         availableMatchesError={availableMatchesError}
         gameName={gameName}
       />
-      <MatchesList availableMatches={availableMatches} gameName={gameName} />
+      <MatchesList
+        handleJoinSelectedMatch={handleJoinSelectedMatch}
+        handleSelectMatch={handleSelectMatch}
+        matches={matches}
+      />
     </section>
   );
 }
@@ -33,17 +39,24 @@ const MatchesError = ({ availableMatchesError, gameName }) => {
   }
   return null;
 };
-const MatchesList = ({ availableMatches, gameName }) => {
-  const list = _.uniqBy(availableMatches?.[gameName] ?? [], "matchID");
-  if (list.length) {
+const MatchesList = ({
+  matches,
+  handleSelectMatch,
+  handleJoinSelectedMatch,
+}) => {
+  if (matches.length) {
     return (
       <>
         <ul>
-          {list.map((match) => {
-            const {
-              matchID, // createdAt, gameName, players, unlisted, updatedAt,
-            } = match;
-            return <li key={matchID}>{matchID}</li>;
+          {matches.map((match) => {
+            return (
+              <MatchListMiniItem
+                handleSelectMatch={handleSelectMatch}
+                handleJoinSelectedMatch={handleJoinSelectedMatch}
+                match={match}
+                key={match.matchID}
+              />
+            );
           })}
         </ul>
       </>

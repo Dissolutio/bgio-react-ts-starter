@@ -1,38 +1,38 @@
 import React, { useState } from "react";
+import _ from "lodash";
 import { LobbyClient } from "boardgame.io/client";
+import { LobbyAPI } from "boardgame.io";
+
+import { defaultSetupData, myGameNumPlayers } from "game/game";
 import {
-  MyGameState,
-  defaultSetupData,
-  myGameNumPlayers,
-} from "../../game/game";
-import { CreateMatchForm } from "./CreateMatchForm";
+  MyGameCreateMatchOptions,
+  JoinMatchOptions,
+  JoinMatchParams,
+} from "./types";
+import { CreateMatchButton } from "./CreateMatchButton";
 import { GameMatchList } from "./GameMatchList";
 import { GetMatchByIdForm } from "./GetMatchByIdForm";
 import { GameSelect } from "./GameSelect";
-import { LobbyAPI } from "boardgame.io";
+import { MatchListItem } from "./MatchListItem";
 
 interface Props {
   serverAddress: string;
 }
-
-type MyGameCreateMatchOptions = {
-  setupData: MyGameState;
-  numPlayers: number;
-  unlisted?: boolean;
-};
-export type GetMatchParams = { gameName: string; matchID: string };
-
 export const NewLobby = (props: Props) => {
   const { serverAddress } = props;
   const lobbyClientRef = React.useRef(
     new LobbyClient({ server: `${serverAddress}` })
   );
 
-  const [availableGames, setAvailableGames] = useState([]);
+  const [availableGames, setAvailableGames] = useState<string[]>([]);
   const [availableGamesError, setAvailableGamesError] = useState("");
 
-  const [availableMatches, setAvailableMatches] = useState({});
-  const [availableMatchesError, setAvailableMatchesError] = useState({});
+  const [availableMatches, setAvailableMatches] = useState<{
+    [gameName: string]: LobbyAPI.Match[];
+  }>({});
+  const [availableMatchesError, setAvailableMatchesError] = useState<{
+    [gameName: string]: string;
+  }>({});
 
   const [createMatchError, setCreateMatchError] = useState("");
   const [createMatchSuccess, setCreateMatchSuccess] = useState("");
@@ -43,10 +43,15 @@ export const NewLobby = (props: Props) => {
   const [selectedMatch, setSelectedMatch] = useState<
     LobbyAPI.Match | undefined
   >(undefined);
-  const handleGameSelectChange = (e) => {
+  const handleSelectGameChange = (e) => {
     setSelectedGame(e.target.value);
   };
+  const handleSelectMatch = (match: LobbyAPI.Match) => {
+    setSelectedMatch(match);
+    getMatchDataByIDForSelectedGame(match.matchID);
+  };
 
+  // ! EFFECTS
   // initial fetch games
   React.useEffect(() => {
     const lobbyClient = lobbyClientRef.current;
@@ -54,7 +59,6 @@ export const NewLobby = (props: Props) => {
       fetchAvailableGames();
     }
   }, []);
-
   // auto-select first game, once games are fetched
   React.useEffect(() => {
     const firstAvailableGame = availableGames?.[0];
@@ -62,8 +66,7 @@ export const NewLobby = (props: Props) => {
       setSelectedGame(firstAvailableGame);
     }
   }, [availableGames, selectedGame]);
-
-  // if selected game changes, fetch matches for that game, and clear selected match if it's not of the selected game
+  // if selected game changes, fetch matches for that game, and clear selected match if it's not of the selected game, clear error states
   React.useEffect(() => {
     const lobbyClient = lobbyClientRef.current;
     if (lobbyClient && selectedGame) {
@@ -73,9 +76,14 @@ export const NewLobby = (props: Props) => {
     if (selectedMatchGameName !== selectedGame) {
       setSelectedMatch(undefined);
     }
+    setAvailableGamesError("");
+    setCreateMatchError("");
+    setCreateMatchSuccess("");
+    // below: do not want to run this hook when selected match changes, only selected game
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGame]);
 
+  //! BGIO LobbyClient API and handlers
   //! GET all games
   async function fetchAvailableGames() {
     const lobbyClient = lobbyClientRef.current;
@@ -106,13 +114,6 @@ export const NewLobby = (props: Props) => {
       setAvailableMatchesError((s) => ({ ...s, [gameName]: error.message }));
     }
   }
-  const handleCreateMatchSubmit: React.FormEventHandler = (e) => {
-    e.preventDefault();
-    createMatch(selectedGame, {
-      setupData: defaultSetupData,
-      numPlayers: myGameNumPlayers,
-    });
-  };
 
   //! POST create match for game
   async function createMatch(
@@ -122,25 +123,29 @@ export const NewLobby = (props: Props) => {
     const { numPlayers, setupData, unlisted = false } = createGameOptions;
     const lobbyClient = lobbyClientRef.current;
     try {
-      const response = await lobbyClient.createMatch(`${gameName}`, {
+      const { matchID } = await lobbyClient.createMatch(`${gameName}`, {
         numPlayers,
         setupData,
         unlisted,
       });
-      const newMatchID = response?.matchID;
-      if (newMatchID) {
+      if (matchID) {
         fetchAvailableMatches(gameName);
+        getMatchDataByIDForSelectedGame(matchID);
         setCreateMatchError("");
-        setCreateMatchSuccess(`${newMatchID}`);
       }
     } catch (error) {
-      setCreateMatchSuccess("");
       setCreateMatchError(error.message);
     }
   }
+  const handleCreateMatchButton = async (e) => {
+    createMatch(selectedGame, {
+      setupData: defaultSetupData,
+      numPlayers: myGameNumPlayers,
+    });
+  };
 
   //! GET Match by ID
-  async function getMatchData(gameName: string, matchID: string) {
+  async function fetchMatch(gameName: string, matchID: string) {
     const lobbyClient = lobbyClientRef.current;
     try {
       //! Note that if matchID matches an available match but the gameName is not the same, our server STILL sends back the match
@@ -154,24 +159,15 @@ export const NewLobby = (props: Props) => {
     }
   }
   async function getMatchDataByIDForSelectedGame(matchID: string) {
-    const matchData = await getMatchData(selectedGame, matchID);
+    const matchData = await fetchMatch(selectedGame, matchID);
     if (matchData) {
       setSelectedMatch(matchData);
     }
   }
 
   //! POST Join a Match
-  type JoinMatchOptions = {
-    playerID: string;
-    playerName: string;
-    data?: any;
-  };
-  async function joinMatch(
-    gameName: string,
-    matchID: string,
-    options: JoinMatchOptions
-  ) {
-    const { playerID, playerName, data } = options;
+  async function joinMatch(params: JoinMatchParams) {
+    const { gameName, matchID, options } = params;
     const lobbyClient = lobbyClientRef.current;
     try {
       const response = await lobbyClient.joinMatch(gameName, matchID, options);
@@ -180,56 +176,61 @@ export const NewLobby = (props: Props) => {
         return playerCredentials;
       }
     } catch (error) {
-      console.log(`🚀 ~ error`, error);
+      console.log(`async joinMatch error`, error);
     }
   }
-  async function joinMatchForCurrentlySelectedGameAndMatch(
-    options: JoinMatchOptions
-  ) {
-    const playerCredentials = await joinMatch(
-      selectedGame,
-      selectedMatch.matchID,
-      options
-    );
-    console.log(`🚀 ~ playerCredentials`, playerCredentials);
+  async function handleJoinSelectedMatch(options: JoinMatchOptions) {
+    const playerCredentials = await joinMatch({
+      gameName: selectedGame,
+      matchID: selectedMatch.matchID,
+      options,
+    });
+    console.log(`🚀 JOINED ~ playerCredentials`, playerCredentials);
   }
+
   //!! finally - NEW LOBBY RETURN
   return (
     <>
-      {false ? (
-        <p
-          style={{ color: "red" }}
-        >{`Error -- Could not retrieve list of games : ${availableGamesError}`}</p>
+      {availableGamesError ? (
+        <p style={{ color: "red" }}>
+          {`Error -- Could not retrieve games from server : ${availableGamesError}`}
+          <button onClick={fetchAvailableGames}>Retry</button>
+        </p>
       ) : (
-        <h3>
-          Available games:{" "}
-          <GameSelect
-            availableGames={availableGames}
-            selectedGame={selectedGame}
-            handleGameSelectChange={handleGameSelectChange}
-          />
-        </h3>
+        <GameSelect
+          selectLabelText={`Choose a game`}
+          availableGames={availableGames}
+          selectedGame={selectedGame}
+          handleSelectGameChange={handleSelectGameChange}
+        />
       )}
+      {/* First game will be auto-selected, so this should display if games are successfully fetched */}
       {selectedGame ? (
         <>
+          <GetMatchByIdForm
+            getMatchByIDError={getMatchByIDError}
+            getMatchDataByIDForSelectedGame={getMatchDataByIDForSelectedGame}
+          />
+          {selectedMatch && (
+            <ul>
+              <MatchListItem
+                handleJoinSelectedMatch={handleJoinSelectedMatch}
+                match={selectedMatch}
+              />
+            </ul>
+          )}
+          <CreateMatchButton
+            createMatchSuccess={createMatchSuccess}
+            createMatchError={createMatchError}
+            handleCreateMatchButton={handleCreateMatchButton}
+          />
           <GameMatchList
             gameName={selectedGame}
             availableMatches={availableMatches}
             availableMatchesError={availableMatchesError}
             fetchAvailableGames={fetchAvailableGames}
-          />
-          <CreateMatchForm
-            availableGames={availableGames}
-            createMatchSuccess={createMatchSuccess}
-            createMatchError={createMatchError}
-            selectedGame={selectedGame}
-            handleGameSelectChange={handleGameSelectChange}
-            handleCreateMatchSubmit={handleCreateMatchSubmit}
-          />
-          <GetMatchByIdForm
-            getMatchByIDError={getMatchByIDError}
-            getMatchDataByIDForSelectedGame={getMatchDataByIDForSelectedGame}
-            selectedMatch={selectedMatch}
+            handleSelectMatch={handleSelectMatch}
+            handleJoinSelectedMatch={handleJoinSelectedMatch}
           />
         </>
       ) : null}

@@ -1,10 +1,14 @@
 import { Lobby as BgioLobby } from "boardgame.io/react";
-import { myGame } from "./game/game";
-import { Board } from "./Board";
+import { myGame } from "../../game/game";
+import { Board } from "../../Board";
 
 const serverGamesList = [{ game: myGame, board: Board }];
 
-export const Lobby = ({ serverAddress }: { serverAddress: string }) => {
+export const BgioReactLobby = ({
+  serverAddress,
+}: {
+  serverAddress: string;
+}) => {
   return (
     <BgioLobby
       gameServer={serverAddress}

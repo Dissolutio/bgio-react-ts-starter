@@ -5,4 +5,3 @@ export * from "./useBgioMoves";
 export * from "./useBgioEvents";
 export * from "./useBgioChat";
 export * from "./useBgioClientInfo";
-export * from "./ui-context";

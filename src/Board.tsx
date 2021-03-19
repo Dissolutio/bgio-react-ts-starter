@@ -6,7 +6,6 @@ import {
   BgioMovesProvider,
   BgioEventsProvider,
   BgioCtxProvider,
-  UIContextProvider,
   BgioChatProvider,
 } from "contexts";
 import { ExampleUI } from "./components/ExampleUI";
@@ -58,9 +57,7 @@ export function Board(props: MyBoardProps) {
                 chatMessages={chatMessages}
                 sendChatMessage={sendChatMessage}
               >
-                <UIContextProvider>
-                  <ExampleUI />
-                </UIContextProvider>
+                <ExampleUI />
               </BgioChatProvider>
             </BgioEventsProvider>
           </BgioMovesProvider>

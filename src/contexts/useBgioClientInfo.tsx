@@ -11,14 +11,15 @@ type BgioClientInfo = {
   isConnected: boolean;
   credentials: string;
 };
-type BgioClientInfoAdded = {
+// add a handy utility property
+type BgioClientInfoCtxValue = BgioClientInfo & {
   belongsToPlayer?: (thing: any) => boolean;
 };
 type BgioClientInfoProviderProps = BgioClientInfo & {
   children: React.ReactNode;
 };
 const BgioClientInfoContext = React.createContext<
-  (BgioClientInfo & BgioClientInfoAdded) | undefined
+  BgioClientInfoCtxValue | undefined
 >(undefined);
 
 export function BgioClientInfoProvider(props: BgioClientInfoProviderProps) {

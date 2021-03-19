@@ -6,6 +6,8 @@ type BgioCtxProviderProps = {
   children: React.ReactNode;
   ctx: BoardProps["ctx"];
 };
+
+// add two handy properties
 type BgioCtxValue = {
   ctx: BoardProps["ctx"] & {
     isMyTurn: boolean;

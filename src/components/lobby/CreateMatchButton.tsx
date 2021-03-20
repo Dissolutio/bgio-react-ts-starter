@@ -13,7 +13,7 @@ export function CreateMatchButton({
       )}
       {createMatchSuccess && (
         <p style={{ color: "green" }}>
-          Match created: {`${createMatchSuccess}`}
+          Last match created: {`${createMatchSuccess}`}
         </p>
       )}
     </div>

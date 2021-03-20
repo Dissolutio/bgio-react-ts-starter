@@ -4,7 +4,7 @@ export function CreateMatchButton({
   handleCreateMatchButton,
 }) {
   return (
-    <p>
+    <div>
       <button onClick={handleCreateMatchButton}>Create new match</button>
       {createMatchError && (
         <p style={{ color: "red" }}>
@@ -16,6 +16,6 @@ export function CreateMatchButton({
           Match created: {`${createMatchSuccess}`}
         </p>
       )}
-    </p>
+    </div>
   );
 }

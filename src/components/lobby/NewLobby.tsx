@@ -48,8 +48,7 @@ export const NewLobby = () => {
     }
   };
 
-  // ! EFFECTS
-  // Effect: auto-select first game, once games are fetched
+  // auto-select first game, once games are fetched
   React.useEffect(() => {
     const firstAvailableGame = lobbyGames?.[0];
     if (firstAvailableGame && !selectedGame) {
@@ -57,7 +56,7 @@ export const NewLobby = () => {
     }
   }, [lobbyGames, selectedGame]);
 
-  // Effect: fetch matches for game when new game selected
+  // fetch matches for game when new game selected
   React.useEffect(() => {
     if (lobbyClient && selectedGame) {
       getLobbyMatches(selectedGame);
@@ -71,7 +70,7 @@ export const NewLobby = () => {
       numPlayers: myGameNumPlayers,
     });
   }
-  // this handler used within `handleSelectMatch` ^^, and `handleSubmit` fn in child component GetMatchByIdForm
+  // this handler used within `handleSelectMatch` ^^, and `handleSubmit` in child component GetMatchByIdForm
   async function getMatchDataByIDForSelectedGame(matchID: string) {
     const matchData = await getMatch(selectedGame, matchID);
     if (matchData) {
@@ -86,7 +85,14 @@ export const NewLobby = () => {
       matchID: selectedMatch.matchID,
       options,
     });
-    console.log(`🚀 JOINED ~ playerCredentials`, playerCredentials);
+    if (playerCredentials) {
+      console.log(
+        `🚀 handleJoinSelectedMatch ~ JOINED, playerCredentials:`,
+        playerCredentials
+      );
+    } else {
+      console.log(`🚀 handleJoinSelectedMatch ~ FAILED TO JOIN`);
+    }
   }
 
   //!! finally - NEW LOBBY RETURN
@@ -112,14 +118,10 @@ export const NewLobby = () => {
             getMatchByIDError={getMatchByIDError}
             getMatchDataByIDForSelectedGame={getMatchDataByIDForSelectedGame}
           />
-          {selectedMatch && (
-            <ul>
-              <MatchListItem
-                handleJoinSelectedMatch={handleJoinSelectedMatch}
-                match={selectedMatch}
-              />
-            </ul>
-          )}
+          <SelectedMatchDisplay
+            selectedMatch={selectedMatch}
+            handleJoinSelectedMatch={handleJoinSelectedMatch}
+          />
           <CreateMatchButton
             createMatchSuccess={createMatchSuccess}
             createMatchError={createMatchError}
@@ -136,5 +138,19 @@ export const NewLobby = () => {
         </>
       ) : null}
     </>
+  );
+};
+
+const SelectedMatchDisplay = ({ selectedMatch, handleJoinSelectedMatch }) => {
+  if (!selectedMatch) {
+    return null;
+  }
+  return (
+    <ul>
+      <MatchListItem
+        handleJoinSelectedMatch={handleJoinSelectedMatch}
+        match={selectedMatch}
+      />
+    </ul>
   );
 };

@@ -1,5 +1,4 @@
 import { LobbyAPI } from "boardgame.io";
-import { JoinGameButton } from "./JoinGameButton";
 import { MatchPlayerMetadata } from "./types";
 import { JoinMatchHandler } from "contexts";
 
@@ -55,13 +54,13 @@ const MatchPlayerDataDisplay = (props: {
         {playerSlot?.name ? (
           `"${playerName}"`
         ) : (
-          <JoinGameButton
-            playerID={playerID}
-            playerName={playerName}
-            handleJoinSelectedMatch={handleJoinSelectedMatch}
+          <button
+            onClick={(e) =>
+              handleJoinSelectedMatch({ playerID: `${playerID}`, playerName })
+            }
           >
             Join
-          </JoinGameButton>
+          </button>
         )}
       </li>
     );

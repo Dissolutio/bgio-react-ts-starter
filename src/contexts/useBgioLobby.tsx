@@ -4,7 +4,7 @@ import { LobbyAPI } from "boardgame.io";
 import { MyGameCreateMatchOptions } from "components/lobby/types";
 
 export type JoinMatchHandler = (options: JoinMatchOptions) => Promise<void>;
-export type JoinMatchParams = {
+type JoinMatchParams = {
   gameName: string;
   matchID: string;
   options: JoinMatchOptions;
@@ -41,14 +41,14 @@ type BgioLobbyCtxValue = {
   getMatchByIDError: string;
 };
 
-const BgioLobbyContext = React.createContext<BgioLobbyCtxValue | undefined>(
-  undefined
-);
-
 type BgioLobbyProviderProps = {
   children: React.ReactNode;
   serverAddress: string;
 };
+
+const BgioLobbyContext = React.createContext<BgioLobbyCtxValue | undefined>(
+  undefined
+);
 
 export function BgioLobbyProvider({
   serverAddress,
@@ -59,7 +59,7 @@ export function BgioLobbyProvider({
     new LobbyClient({ server: `${serverAddress}` })
   );
   const lobbyClient = lobbyClientRef.current;
-
+  // STATE
   const [lobbyGames, setLobbyGames] = useState<string[]>([]);
   const [lobbyGamesError, setLobbyGamesError] = useState("");
   const [lobbyMatches, setLobbyMatches] = useState<LobbyMatches>({});
@@ -160,7 +160,7 @@ export function BgioLobbyProvider({
       );
       return playerCredentials;
     } catch (error) {
-      console.dir(`🚀 ~ joinMatch ~ error`, error);
+      console.log(`🚀 ~ joinMatch ~ error`, error);
     }
   }
 

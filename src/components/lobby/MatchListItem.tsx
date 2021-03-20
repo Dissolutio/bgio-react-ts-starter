@@ -1,11 +1,12 @@
 import { LobbyAPI } from "boardgame.io";
 import { JoinGameButton } from "./JoinGameButton";
-import { JoinMatchOptions, MatchPlayerMetadata } from "./types";
+import { MatchPlayerMetadata } from "./types";
+import { JoinMatchHandler } from "contexts";
 
 export const MatchListMiniItem = (props: {
   match: LobbyAPI.Match;
   handleSelectMatch: (match: LobbyAPI.Match) => void;
-  handleJoinSelectedMatch: (options: JoinMatchOptions) => Promise<void>;
+  handleJoinSelectedMatch: JoinMatchHandler;
 }) => {
   const { match, handleSelectMatch } = props;
   const { matchID } = match;
@@ -14,7 +15,7 @@ export const MatchListMiniItem = (props: {
 
 export const MatchListItem = (props: {
   match: LobbyAPI.Match;
-  handleJoinSelectedMatch: (options: JoinMatchOptions) => Promise<void>;
+  handleJoinSelectedMatch: JoinMatchHandler;
 }) => {
   const { match, handleJoinSelectedMatch } = props;
   const { matchID, createdAt, gameName, players, unlisted, updatedAt } = match;
@@ -38,7 +39,7 @@ export const MatchListItem = (props: {
 
 const MatchPlayerDataDisplay = (props: {
   players: MatchPlayerMetadata[];
-  handleJoinSelectedMatch: (options: JoinMatchOptions) => Promise<void>;
+  handleJoinSelectedMatch: JoinMatchHandler;
 }) => {
   const { players, handleJoinSelectedMatch } = props;
   // Displays like this:

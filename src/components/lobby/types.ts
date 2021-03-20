@@ -12,13 +12,3 @@ export type MyGameCreateMatchOptions = {
   numPlayers: number;
   unlisted?: boolean;
 };
-export type JoinMatchOptions = {
-  playerID: string;
-  playerName: string;
-  data?: any;
-};
-export type JoinMatchParams = {
-  gameName: string;
-  matchID: string;
-  options: JoinMatchOptions;
-};

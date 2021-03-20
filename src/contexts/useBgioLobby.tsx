@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { LobbyClient } from "boardgame.io/client";
 import { LobbyAPI } from "boardgame.io";
-import {
-  MyGameCreateMatchOptions,
-  JoinMatchParams,
-} from "components/lobby/types";
+import { MyGameCreateMatchOptions } from "components/lobby/types";
 
-type AvailableMatches = {
+export type JoinMatchHandler = (options: JoinMatchOptions) => Promise<void>;
+export type JoinMatchParams = {
+  gameName: string;
+  matchID: string;
+  options: JoinMatchOptions;
+};
+export type JoinMatchOptions = {
+  playerID: string;
+  playerName: string;
+  data?: any;
+};
+
+type LobbyMatches = {
   [gameName: string]: LobbyAPI.Match[];
 };
-type AvailableMatchesError = {
+type LobbyMatchesError = {
   [gameName: string]: string;
 };
 type BgioLobbyCtxValue = {
   lobbyClient: LobbyClient | undefined;
-  fetchAvailableGames: any;
-  fetchAvailableMatches: (gameName: string) => Promise<LobbyAPI.MatchList>;
+  getLobbyGames: any;
+  getLobbyMatches: (gameName: string) => Promise<LobbyAPI.MatchList>;
   getMatch: (gameName: string, matchID: string) => Promise<LobbyAPI.Match>;
   createMatch: (
     gameName: string,
     createGameOptions: MyGameCreateMatchOptions
   ) => Promise<string | undefined>;
   joinMatch: (params: JoinMatchParams) => Promise<string>;
-  availableGames: LobbyAPI.GameList;
-  availableMatches: AvailableMatches;
-  availableMatchesError: AvailableMatchesError;
-  availableGamesError: string;
+  lobbyGames: string[];
+  lobbyMatches: LobbyMatches;
+  lobbyMatchesError: LobbyMatchesError;
+  lobbyGamesError: string;
   createMatchError: string;
   createMatchSuccess: string;
   getMatchByIDSuccess: string;
@@ -45,71 +54,60 @@ export function BgioLobbyProvider({
   serverAddress,
   children,
 }: BgioLobbyProviderProps) {
+  // instantiate the boardgame.io LobbyClient
   const lobbyClientRef = React.useRef(
     new LobbyClient({ server: `${serverAddress}` })
   );
   const lobbyClient = lobbyClientRef.current;
 
-  const [availableGames, setAvailableGames] = useState<string[]>([]);
-  const [availableGamesError, setAvailableGamesError] = useState("");
-  const [availableMatches, setAvailableMatches] = useState<AvailableMatches>(
+  const [lobbyGames, setLobbyGames] = useState<string[]>([]);
+  const [lobbyGamesError, setLobbyGamesError] = useState("");
+  const [lobbyMatches, setLobbyMatches] = useState<LobbyMatches>({});
+  const [lobbyMatchesError, setLobbyMatchesError] = useState<LobbyMatchesError>(
     {}
   );
-  const [
-    availableMatchesError,
-    setAvailableMatchesError,
-  ] = useState<AvailableMatchesError>({});
-
-  const [createMatchError, setCreateMatchError] = useState("");
   const [createMatchSuccess, setCreateMatchSuccess] = useState("");
+  const [createMatchError, setCreateMatchError] = useState("");
   const [getMatchByIDSuccess, setGetMatchByIDSuccess] = useState("");
   const [getMatchByIDError, setGetMatchByIDError] = useState("");
 
-  //! GET GAMES
-  async function fetchAvailableGames() {
+  // initial fetch games
+  useEffect(() => {
+    getLobbyGames();
+    // eslint reason: Only want to fetch games on mount for now.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // BGIO Lobby API
+  async function getLobbyGames() {
     try {
       const games = await lobbyClient.listGames();
       if (games) {
-        setAvailableGamesError("");
-        setAvailableGames(games);
+        setLobbyGamesError("");
+        setLobbyGames(games);
         return games;
       }
     } catch (error) {
-      setAvailableGamesError(error.message);
-      console.log(`🚀 ~ fetchAvailableGames ~ error`, error);
+      setLobbyGamesError(error.message);
+      console.log(`🚀 ~ getLobbyGames ~ error`, error);
     }
   }
-  //! GET MATCHES
-  async function fetchAvailableMatches(gameName: string) {
+  async function getLobbyMatches(gameName: string) {
     try {
       const matches = await lobbyClient.listMatches(gameName);
       if (matches) {
-        setAvailableMatchesError((s) => ({
+        setLobbyMatchesError((s) => ({
           ...s,
           [gameName]: undefined,
         }));
-        setAvailableMatches((s) => ({ ...s, [gameName]: matches.matches }));
+        setLobbyMatches((s) => ({ ...s, [gameName]: matches.matches }));
         return matches;
       }
     } catch (error) {
-      setAvailableMatchesError((s) => ({ ...s, [gameName]: error.message }));
-      console.log(`🚀 ~ fetchAvailableMatches ~ error`, error);
+      setLobbyMatchesError((s) => ({ ...s, [gameName]: error.message }));
+      console.log(`🚀 ~ getLobbyMatches ~ error`, error);
     }
   }
-  // similar to fetchAvailableMatches but does not update error state
-  async function updateAvailableMatches(gameName: string) {
-    try {
-      const matches = await lobbyClient.listMatches(gameName);
-      if (matches) {
-        setAvailableMatches((s) => ({ ...s, [gameName]: matches.matches }));
-        return matches;
-      }
-    } catch (error) {
-      // todo: set some kind of 'lost-connection' state?
-      console.log(`🚀 ~ fetchAvailableMatches ~ error`, error);
-    }
-  }
-  //! CREATE MATCH
   async function createMatch(
     gameName: string,
     createGameOptions: MyGameCreateMatchOptions
@@ -128,7 +126,7 @@ export function BgioLobbyProvider({
       if (matchID) {
         setCreateMatchSuccess(matchID);
         setCreateMatchError("");
-        updateAvailableMatches(gameName);
+        getLobbyMatches(gameName);
         return matchID;
       }
     } catch (error) {
@@ -136,10 +134,9 @@ export function BgioLobbyProvider({
       console.log(`🚀 ~ createMatch ~ error`, error);
     }
   }
-  //! GET MATCH BY ID
   async function getMatch(gameName: string, matchID: string) {
     try {
-      //? matchID matches an available match but the gameName is not the same, bgio server sends back the match anyway it seems
+      //? UNEXPECTED SERVER RETURN: if `matchID` matches but `gameName` does not, bgio server sends back the match anyway it seems
       const response = await lobbyClient.getMatch(gameName, matchID);
       if (response) {
         setGetMatchByIDError("");
@@ -153,7 +150,6 @@ export function BgioLobbyProvider({
       setGetMatchByIDError(error.message);
     }
   }
-  //! JOIN MATCH
   async function joinMatch(params: JoinMatchParams) {
     const { gameName, matchID, options } = params;
     try {
@@ -164,35 +160,23 @@ export function BgioLobbyProvider({
       );
       return playerCredentials;
     } catch (error) {
-      console.log(`🚀 ~ joinMatch ~ error`, error);
+      console.dir(`🚀 ~ joinMatch ~ error`, error);
     }
   }
-  //! Effect: initial fetch games
-  useEffect(() => {
-    async function initializeGames() {
-      if (lobbyClient) {
-        const games = await fetchAvailableGames();
-        console.log(`🚀 ~ initializeGames ~ games`, games);
-      }
-    }
-    initializeGames();
-    // disabled reason: Only want to run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <BgioLobbyContext.Provider
       value={{
         lobbyClient: lobbyClientRef.current,
-        fetchAvailableGames,
-        fetchAvailableMatches,
+        getLobbyGames,
+        getLobbyMatches,
         getMatch,
         createMatch,
         joinMatch,
-        availableGames,
-        availableGamesError,
-        availableMatches,
-        availableMatchesError,
+        lobbyGames,
+        lobbyGamesError,
+        lobbyMatches,
+        lobbyMatchesError,
         createMatchError,
         createMatchSuccess,
         getMatchByIDSuccess,

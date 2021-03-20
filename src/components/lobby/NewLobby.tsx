@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { LobbyAPI } from "boardgame.io";
 
 import { defaultSetupData, myGameNumPlayers } from "game/game";
-import { JoinMatchOptions } from "./types";
-import { useBgioLobby } from "contexts";
+import { useBgioLobby, JoinMatchOptions } from "contexts";
 import { CreateMatchButton } from "./CreateMatchButton";
 import { GameMatchList } from "./GameMatchList";
 import { GetMatchByIdForm } from "./GetMatchByIdForm";
@@ -14,16 +13,16 @@ export const NewLobby = () => {
   const {
     lobbyClient,
     // BGIO Lobby API Calls
-    fetchAvailableGames,
-    fetchAvailableMatches,
+    getLobbyGames,
+    getLobbyMatches,
     getMatch,
     createMatch,
     joinMatch,
     //state
-    availableGames,
-    availableGamesError,
-    availableMatches,
-    availableMatchesError,
+    lobbyGames,
+    lobbyGamesError,
+    lobbyMatches,
+    lobbyMatchesError,
     createMatchSuccess,
     createMatchError,
     getMatchByIDError,
@@ -45,23 +44,23 @@ export const NewLobby = () => {
       setSelectedMatch(refreshedMatch);
     } else {
       setSelectedMatch(undefined);
-      fetchAvailableMatches(selectedGame);
+      getLobbyMatches(selectedGame);
     }
   };
 
   // ! EFFECTS
   // Effect: auto-select first game, once games are fetched
   React.useEffect(() => {
-    const firstAvailableGame = availableGames?.[0];
+    const firstAvailableGame = lobbyGames?.[0];
     if (firstAvailableGame && !selectedGame) {
       setSelectedGame(firstAvailableGame);
     }
-  }, [availableGames, selectedGame]);
+  }, [lobbyGames, selectedGame]);
 
   // Effect: fetch matches for game when new game selected
   React.useEffect(() => {
     if (lobbyClient && selectedGame) {
-      fetchAvailableMatches(selectedGame);
+      getLobbyMatches(selectedGame);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGame]);
@@ -93,15 +92,15 @@ export const NewLobby = () => {
   //!! finally - NEW LOBBY RETURN
   return (
     <>
-      {availableGamesError ? (
+      {lobbyGamesError ? (
         <p style={{ color: "red" }}>
-          {`Error -- Could not retrieve games from server : ${availableGamesError}`}
-          <button onClick={fetchAvailableGames}>Retry</button>
+          {`Error -- Could not retrieve games from server : ${lobbyGamesError}`}
+          <button onClick={getLobbyGames}>Retry</button>
         </p>
       ) : (
         <GameSelect
           selectLabelText={`Choose a game`}
-          availableGames={availableGames}
+          lobbyGames={lobbyGames}
           selectedGame={selectedGame}
           handleSelectGameChange={handleSelectGameChange}
         />
@@ -128,9 +127,9 @@ export const NewLobby = () => {
           />
           <GameMatchList
             gameName={selectedGame}
-            availableMatches={availableMatches}
-            availableMatchesError={availableMatchesError}
-            fetchAvailableMatches={fetchAvailableMatches}
+            lobbyMatches={lobbyMatches}
+            lobbyMatchesError={lobbyMatchesError}
+            getLobbyMatches={getLobbyMatches}
             handleSelectMatch={handleSelectMatch}
             handleJoinSelectedMatch={handleJoinSelectedMatch}
           />

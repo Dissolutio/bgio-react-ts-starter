@@ -3,25 +3,22 @@ import { MatchListMiniItem } from "./MatchListItem";
 
 export function GameMatchList({
   gameName,
-  availableMatches,
-  availableMatchesError,
-  fetchAvailableMatches,
+  lobbyMatches,
+  lobbyMatchesError,
+  getLobbyMatches,
   handleSelectMatch,
   handleJoinSelectedMatch,
 }) {
   async function handleRefreshButton(e) {
-    fetchAvailableMatches(gameName);
+    getLobbyMatches(gameName);
   }
-  const matches = _.uniqBy(availableMatches?.[gameName] ?? [], "matchID");
+  const matches = _.uniqBy(lobbyMatches?.[gameName] ?? [], "matchID");
 
   return (
     <section>
       <h3>{`Available Matches for ${gameName}`}</h3>
       <button onClick={handleRefreshButton}>{`Refresh`}</button>
-      <MatchesError
-        availableMatchesError={availableMatchesError}
-        gameName={gameName}
-      />
+      <MatchesError lobbyMatchesError={lobbyMatchesError} gameName={gameName} />
       <MatchesList
         handleJoinSelectedMatch={handleJoinSelectedMatch}
         handleSelectMatch={handleSelectMatch}
@@ -31,13 +28,13 @@ export function GameMatchList({
   );
 }
 
-const MatchesError = ({ availableMatchesError, gameName }) => {
-  if (availableMatchesError[gameName]) {
+const MatchesError = ({ lobbyMatchesError, gameName }) => {
+  if (lobbyMatchesError[gameName]) {
     return (
       <>
         <p
           style={{ color: "red" }}
-        >{`Error - Unable to fetch matches for ${gameName} from server: ${availableMatchesError[gameName]}`}</p>
+        >{`Error - Unable to fetch matches for ${gameName} from server: ${lobbyMatchesError[gameName]}`}</p>
       </>
     );
   }

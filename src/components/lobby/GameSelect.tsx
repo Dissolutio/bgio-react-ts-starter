@@ -1,13 +1,13 @@
 type Props = {
   selectLabelText: string;
-  availableGames: any[];
+  lobbyGames: any[];
   selectedGame: string;
   handleSelectGameChange: (e: any) => void;
 };
 
 export const GameSelect = (props: Props) => {
   const {
-    availableGames,
+    lobbyGames,
     selectedGame,
     handleSelectGameChange,
     selectLabelText,
@@ -21,7 +21,7 @@ export const GameSelect = (props: Props) => {
         value={selectedGame}
         id={createMatchGameSelectHtmlID}
       >
-        {availableGames.map((gameName) => (
+        {lobbyGames.map((gameName) => (
           <option key={gameName} value={gameName}>
             {gameName}
           </option>

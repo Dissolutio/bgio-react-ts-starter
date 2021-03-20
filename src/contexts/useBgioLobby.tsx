@@ -12,9 +12,6 @@ type AvailableMatches = {
 type AvailableMatchesError = {
   [gameName: string]: string;
 };
-type ReactStringSetter = React.Dispatch<React.SetStateAction<string>>;
-type ReactStringArrSetter = React.Dispatch<React.SetStateAction<string[]>>;
-
 type BgioLobbyCtxValue = {
   lobbyClient: LobbyClient | undefined;
   fetchAvailableGames: any;
@@ -26,23 +23,13 @@ type BgioLobbyCtxValue = {
   ) => Promise<string | undefined>;
   joinMatch: (params: JoinMatchParams) => Promise<string>;
   availableGames: LobbyAPI.GameList;
-  setAvailableGames: ReactStringArrSetter;
   availableMatches: AvailableMatches;
-  setAvailableMatches: React.Dispatch<React.SetStateAction<AvailableMatches>>;
   availableMatchesError: AvailableMatchesError;
-  setAvailableMatchesError: React.Dispatch<
-    React.SetStateAction<AvailableMatchesError>
-  >;
   availableGamesError: string;
-  setAvailableGamesError: ReactStringSetter;
   createMatchError: string;
-  setCreateMatchError: ReactStringSetter;
   createMatchSuccess: string;
-  setCreateMatchSuccess: ReactStringSetter;
   getMatchByIDSuccess: string;
-  setGetMatchByIDSuccess: ReactStringSetter;
   getMatchByIDError: string;
-  setGetMatchByIDError: ReactStringSetter;
 };
 
 const BgioLobbyContext = React.createContext<BgioLobbyCtxValue | undefined>(
@@ -203,21 +190,13 @@ export function BgioLobbyProvider({
         createMatch,
         joinMatch,
         availableGames,
-        setAvailableGames,
         availableGamesError,
-        setAvailableGamesError,
         availableMatches,
-        setAvailableMatches,
         availableMatchesError,
-        setAvailableMatchesError,
         createMatchError,
-        setCreateMatchError,
         createMatchSuccess,
-        setCreateMatchSuccess,
         getMatchByIDSuccess,
-        setGetMatchByIDSuccess,
         getMatchByIDError,
-        setGetMatchByIDError,
       }}
     >
       {children}

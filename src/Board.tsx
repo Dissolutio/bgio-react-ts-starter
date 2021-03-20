@@ -38,16 +38,17 @@ export function Board(props: MyBoardProps) {
     isConnected,
     credentials,
   } = props;
+  console.log(`🚀 ~ Board ~ log`, log);
   return (
     <BgioClientInfoProvider
-      playerID={playerID}
       log={log}
+      playerID={playerID}
       matchID={matchID}
       matchData={matchData}
-      isActive={isActive}
+      credentials={credentials}
       isMultiplayer={isMultiplayer}
       isConnected={isConnected}
-      credentials={credentials}
+      isActive={isActive}
     >
       <BgioGProvider G={G}>
         <BgioCtxProvider ctx={ctx}>

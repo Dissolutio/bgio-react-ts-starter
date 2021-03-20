@@ -228,7 +228,7 @@ export const NewLobby = (props: Props) => {
             gameName={selectedGame}
             availableMatches={availableMatches}
             availableMatchesError={availableMatchesError}
-            fetchAvailableGames={fetchAvailableGames}
+            fetchAvailableMatches={fetchAvailableMatches}
             handleSelectMatch={handleSelectMatch}
             handleJoinSelectedMatch={handleJoinSelectedMatch}
           />

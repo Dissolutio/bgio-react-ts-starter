@@ -5,15 +5,19 @@ export function GameMatchList({
   gameName,
   availableMatches,
   availableMatchesError,
-  fetchAvailableGames,
+  fetchAvailableMatches,
   handleSelectMatch,
   handleJoinSelectedMatch,
 }) {
+  async function handleRefreshButton(e) {
+    const response = await fetchAvailableMatches(gameName);
+  }
   const matches = _.uniqBy(availableMatches?.[gameName] ?? [], "matchID");
+
   return (
     <section>
       <h3>{`Available Matches for ${gameName}`}</h3>
-      <button onClick={() => fetchAvailableGames(gameName)}>{`Refresh`}</button>
+      <button onClick={handleRefreshButton}>{`Refresh`}</button>
       <MatchesError
         availableMatchesError={availableMatchesError}
         gameName={gameName}

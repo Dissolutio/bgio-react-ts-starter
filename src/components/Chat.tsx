@@ -47,12 +47,6 @@ export const ChatInput = () => {
 export const ChatList = () => {
   const chatCtxVal = useBgioChat();
   const chatMessages = _.uniqBy(chatCtxVal.chatMessages, "id");
-  // const uniqueChatMessages = chatMessages.reduce((prev, curr) => {
-  //   if (prev.some((chat) => chat.id === curr.id)) {
-  //     return prev;
-  //   }
-  //   return [...prev, curr];
-  // }, []);
   return (
     <ul style={{ listStyleType: "none" }}>
       {chatMessages.map((chat) => {

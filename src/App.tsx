@@ -1,6 +1,6 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { NewLobby } from "components/lobby/NewLobby";
-import { PassAndPlayMatch } from "./PassAndPlayMatch";
+import { Demo } from "./Demo";
 
 // ! Three Options:
 // * Client that connects to its origin server `npm run build`
@@ -8,29 +8,32 @@ import { PassAndPlayMatch } from "./PassAndPlayMatch";
 // * A local game (for game development) `npm run start`
 const isDeploymentEnv = process.env.NODE_ENV === "production";
 const isDevEnv = process.env.NODE_ENV === "development";
-const isLocalServer = !Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER);
-const isLocalApp = isDevEnv && isLocalServer;
+const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER);
+const isLocalApp = isDevEnv && !isSeparateServer;
 
-let server;
-if (isDeploymentEnv) {
-  const { protocol, hostname, port } = window.location;
-  server = `${protocol}//${hostname}`;
-  if (port) {
-    server += `:${port}`;
+// use appropriate address for server
+const decideServerAddress = () => {
+  if (isSeparateServer) {
+    return "http://localhost:8000";
   }
-} else {
-  server = "http://localhost:8000";
-}
+  if (isDeploymentEnv) {
+    const { protocol, hostname, port } = window.location;
+    return `${protocol}//${hostname}${port ? `${port}` : ``}`;
+  }
+};
 
 export const App = () => {
   if (isLocalApp) {
-    return <PassAndPlayMatch />;
+    return <Demo />;
   } else {
     return (
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <NewLobby serverAddress={server} />
+            <NewLobby serverAddress={decideServerAddress()} />
+          </Route>
+          <Route exact path="/demo">
+            <Demo />
           </Route>
         </Switch>
       </BrowserRouter>

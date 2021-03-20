@@ -1,3 +1,4 @@
+export * from "./useBgioLobby";
 export * from "./useBgioClientInfo";
 export * from "./useBgioG";
 export * from "./useBgioCtx";

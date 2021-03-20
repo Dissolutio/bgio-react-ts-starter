@@ -10,7 +10,7 @@ export function GameMatchList({
   handleJoinSelectedMatch,
 }) {
   async function handleRefreshButton(e) {
-    const response = await fetchAvailableMatches(gameName);
+    fetchAvailableMatches(gameName);
   }
   const matches = _.uniqBy(availableMatches?.[gameName] ?? [], "matchID");
 

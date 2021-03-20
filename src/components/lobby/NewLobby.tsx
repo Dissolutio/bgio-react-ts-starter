@@ -19,12 +19,13 @@ export const NewLobby = () => {
     getMatch,
     createMatch,
     joinMatch,
+    //state
     availableGames,
     availableGamesError,
     availableMatches,
     availableMatchesError,
-    createMatchError,
     createMatchSuccess,
+    createMatchError,
     getMatchByIDError,
   } = useBgioLobby();
 
@@ -66,7 +67,7 @@ export const NewLobby = () => {
   }, [selectedGame]);
 
   async function handleCreateMatchButton(e) {
-    const matchID = await createMatch(selectedGame, {
+    await createMatch(selectedGame, {
       setupData: defaultSetupData,
       numPlayers: myGameNumPlayers,
     });

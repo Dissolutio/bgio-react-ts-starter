@@ -68,7 +68,7 @@ export const NewLobby = () => {
     // optimistic update
     setSelectedMatch(match);
     // refresh the selected match
-    const refreshedMatch = await getMatchDataByIDForSelectedGame(match.matchID);
+    const refreshedMatch = await getMatch(match.gameName, match.matchID);
     // then select the refreshed match (aka update) if success ...
     if (refreshedMatch?.matchID) {
       setSelectedMatch(refreshedMatch);
@@ -86,14 +86,6 @@ export const NewLobby = () => {
       setupData: defaultSetupData,
       numPlayers: myGameNumPlayers,
     });
-  }
-  // handle get + select match
-  async function getMatchDataByIDForSelectedGame(matchID: string) {
-    const matchData = await getMatch(selectedGame, matchID);
-    if (matchData) {
-      setSelectedMatch(matchData);
-      return matchData;
-    }
   }
   // join match, then save credentials and proceed to Room
   async function handleJoinSelectedMatch(options: JoinMatchOptions) {

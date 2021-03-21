@@ -8,6 +8,7 @@ export function GameMatchList({
   getLobbyMatches,
   handleSelectMatch,
   handleJoinSelectedMatch,
+  numCurrentMatches,
 }) {
   async function handleRefreshButton(e) {
     getLobbyMatches(gameName);
@@ -16,7 +17,7 @@ export function GameMatchList({
 
   return (
     <section>
-      <h3>{`Available Matches for ${gameName}`}</h3>
+      <h3>{`${gameName} matches (${numCurrentMatches})`}</h3>
       <button onClick={handleRefreshButton}>{`Refresh`}</button>
       <MatchesError lobbyMatchesError={lobbyMatchesError} gameName={gameName} />
       <MatchesList

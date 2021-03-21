@@ -48,6 +48,9 @@ export const NewLobby = () => {
     }
   };
 
+  // computed state
+  const numCurrentMatches = lobbyMatches?.[selectedGame]?.length ?? 0;
+
   // auto-select first game, once games are fetched
   React.useEffect(() => {
     const firstAvailableGame = lobbyGames?.[0];
@@ -132,6 +135,7 @@ export const NewLobby = () => {
             getLobbyMatches={getLobbyMatches}
             handleSelectMatch={handleSelectMatch}
             handleJoinSelectedMatch={handleJoinSelectedMatch}
+            numCurrentMatches={numCurrentMatches}
           />
         </>
       ) : null}

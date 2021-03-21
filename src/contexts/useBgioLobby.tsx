@@ -131,6 +131,7 @@ export function BgioLobbyProvider({
         return matchID;
       }
     } catch (error) {
+      setCreateMatchSuccess("");
       setCreateMatchError(error.message);
       console.log(`🚀 ~ createMatch ~ error`, error);
     }

@@ -5,7 +5,6 @@ import { defaultSetupData, myGameNumPlayers } from "game/game";
 import { useBgioLobby, JoinMatchOptions } from "contexts";
 import { CreateMatchButton } from "./CreateMatchButton";
 import { GameMatchList } from "./GameMatchList";
-import { GetMatchByIdForm } from "./GetMatchByIdForm";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -135,10 +134,6 @@ export const NewLobby = () => {
       {/* First game will be auto-selected, so this should display if games are successfully fetched */}
       {selectedGame ? (
         <>
-          <GetMatchByIdForm
-            getMatchByIDError={getMatchByIDError}
-            getMatchDataByIDForSelectedGame={getMatchDataByIDForSelectedGame}
-          />
           <SelectedMatchDisplay
             selectedMatch={selectedMatch}
             handleJoinSelectedMatch={handleJoinSelectedMatch}

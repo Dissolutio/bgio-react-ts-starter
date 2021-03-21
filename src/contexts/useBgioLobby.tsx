@@ -70,6 +70,7 @@ export function BgioLobbyProvider({
   const [createMatchError, setCreateMatchError] = useState("");
   const [getMatchByIDSuccess, setGetMatchByIDSuccess] = useState("");
   const [getMatchByIDError, setGetMatchByIDError] = useState("");
+  const [joinedMatch, setJoinedMatch] = useState<LobbyAPI.Match>(undefined);
 
   // initial fetch games
   useEffect(() => {

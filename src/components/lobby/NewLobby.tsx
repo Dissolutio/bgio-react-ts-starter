@@ -78,7 +78,7 @@ export const NewLobby = () => {
       return matchData;
     }
   }
-
+  // join match, then save credentials and proceed to Room
   async function handleJoinSelectedMatch(options: JoinMatchOptions) {
     const playerCredentials = await joinMatch({
       gameName: selectedGame,
@@ -86,16 +86,14 @@ export const NewLobby = () => {
       options,
     });
     if (playerCredentials) {
-      console.log(
-        `🚀 handleJoinSelectedMatch ~ JOINED, playerCredentials:`,
-        playerCredentials
-      );
+      // refresh match info
+      // set joined match to new match info
     } else {
       console.log(`🚀 handleJoinSelectedMatch ~ FAILED TO JOIN`);
     }
   }
 
-  //!! finally - NEW LOBBY RETURN
+  // return error or game select + rest
   return (
     <>
       {lobbyGamesError ? (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LobbyAPI } from "boardgame.io";
 
 import { defaultSetupData, myGameNumPlayers } from "game/game";
@@ -8,6 +8,7 @@ import { GameMatchList } from "./GameMatchList";
 import { GetMatchByIdForm } from "./GetMatchByIdForm";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
+import useLocalStorage from "hooks/useLocalStorage";
 
 export const NewLobby = () => {
   const {
@@ -27,53 +28,67 @@ export const NewLobby = () => {
     createMatchError,
     getMatchByIDError,
   } = useBgioLobby();
-
+  const [storedPlayerCredentials, setStoredPlayerCredentials] = useLocalStorage(
+    "bgio-player-credentials",
+    {
+      matchID: "",
+      playerCredentials: "",
+    }
+  );
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<
     LobbyAPI.Match | undefined
   >(undefined);
-  const handleSelectGameChange = (e) => {
-    setSelectedGame(e.target.value);
-  };
-  const handleSelectMatch = async (match: LobbyAPI.Match) => {
-    // optimistic update
-    setSelectedMatch(match);
-    // refresh, update if success, clear and refetch matches if not
-    const refreshedMatch = await getMatchDataByIDForSelectedGame(match.matchID);
-    if (refreshedMatch?.matchID) {
-      setSelectedMatch(refreshedMatch);
-    } else {
-      setSelectedMatch(undefined);
-      getLobbyMatches(selectedGame);
-    }
-  };
 
   // computed state
   const numCurrentMatches = lobbyMatches?.[selectedGame]?.length ?? 0;
 
-  // auto-select first game, once games are fetched
-  React.useEffect(() => {
+  // effect auto-select first game (once they're fetched)
+  useEffect(() => {
     const firstAvailableGame = lobbyGames?.[0];
     if (firstAvailableGame && !selectedGame) {
       setSelectedGame(firstAvailableGame);
     }
   }, [lobbyGames, selectedGame]);
 
-  // fetch matches for game when new game selected
-  React.useEffect(() => {
+  // effect fetch matches
+  // fires for currently selected game (including initial auto-selection)
+  useEffect(() => {
     if (lobbyClient && selectedGame) {
       getLobbyMatches(selectedGame);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGame]);
 
+  // handler select game
+  const handleSelectGameChange = (e) => {
+    setSelectedGame(e.target.value);
+  };
+  // handler select match
+  const handleSelectMatch = async (match: LobbyAPI.Match) => {
+    // optimistic update
+    setSelectedMatch(match);
+    // refresh the selected match
+    const refreshedMatch = await getMatchDataByIDForSelectedGame(match.matchID);
+    // then select the refreshed match (aka update) if success ...
+    if (refreshedMatch?.matchID) {
+      setSelectedMatch(refreshedMatch);
+    }
+    // ... otherwise, selected match does not exist, so we clear and refetch matches
+    // todo: we should apologize
+    else {
+      setSelectedMatch(undefined);
+      getLobbyMatches(selectedGame);
+    }
+  };
+  // handler createMatch
   async function handleCreateMatchButton(e) {
     await createMatch(selectedGame, {
       setupData: defaultSetupData,
       numPlayers: myGameNumPlayers,
     });
   }
-  // this handler used within `handleSelectMatch` ^^, and `handleSubmit` in child component GetMatchByIdForm
+  // handle get + select match
   async function getMatchDataByIDForSelectedGame(matchID: string) {
     const matchData = await getMatch(selectedGame, matchID);
     if (matchData) {
@@ -83,13 +98,18 @@ export const NewLobby = () => {
   }
   // join match, then save credentials and proceed to Room
   async function handleJoinSelectedMatch(options: JoinMatchOptions) {
+    const matchID = selectedMatch.matchID;
+    const gameName = `${selectedGame}`;
     const playerCredentials = await joinMatch({
-      gameName: selectedGame,
-      matchID: selectedMatch.matchID,
+      gameName,
+      matchID,
       options,
     });
     if (playerCredentials) {
+      //save
+      setStoredPlayerCredentials({ matchID, playerCredentials });
       // refresh match info
+      getMatch(gameName, matchID);
       // set joined match to new match info
     } else {
       console.log(`🚀 handleJoinSelectedMatch ~ FAILED TO JOIN`);

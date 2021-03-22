@@ -11,6 +11,18 @@ The project also includes _react-router-dom_ already. See example of its use in 
 
 The game files, in the `src/game/` directory, can be used by the Local server, but for the node server in `devserver.js` and `server.js` to use them, they must be compiled to JS files. This compilation is run by some of the scripts below, and the files are output to the `server/` directory. Don't use that folder for other stuff.
 
+### CSS / UI Library used
+
+It's called [water.css](https://watercss.kognise.dev/), I chose it because it has no dependencies, it does **not** use classnames (so the JSX markup is not contaminated with classNames) and it's tiny, so you can easily remove it and use something else. Adding it to the project involved no npm install, just adding the following import to our `index.html`:
+
+```html
+<!-- in project root /public/index.html -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+/>
+```
+
 ### React hooks included to access BGIO data:
 
 1. usePlayerID

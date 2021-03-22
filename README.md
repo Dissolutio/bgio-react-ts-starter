@@ -1,3 +1,20 @@
+- [Boardgame.io React TypeScript Starter](#boardgameio-react-typescript-starter)
+  - [Overview](#overview)
+    - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
+      - [List of BGIO Contexts](#list-of-bgio-contexts)
+    - [React-Router-Dom is included](#react-router-dom-is-included)
+    - [`server/` is a compiled directory - don't use it](#server-is-a-compiled-directory---dont-use-it)
+    - [CSS / UI Library used: water.css](#css--ui-library-used-watercss)
+  - [Available Scripts](#available-scripts)
+    - [`npm start`](#npm-start)
+    - [`npm run devstart`](#npm-run-devstart)
+    - [`npm run devserver`](#npm-run-devserver)
+    - [`npm run build`](#npm-run-build)
+    - [`npm run server`](#npm-run-server)
+    - [`npm test`](#npm-test)
+    - [`npm run eject`](#npm-run-eject)
+  - [Create-React-App info](#create-react-app-info)
+
 # Boardgame.io React TypeScript Starter
 
 This is a React app built with [Create React App](https://github.com/facebook/create-react-app) and [Boardgame.io](https://boardgame.io).
@@ -5,15 +22,39 @@ For now referred to as CRA and BGIO. It comes with some simple commands to get u
 
 ## Overview
 
-The Board component receives [the BGIO API as props](https://boardgame.io/documentation/#/api/Client?id=board-props). Our Board splits the props up into different contexts, now your underlying UI components can access them easily, and hopefully without unnecessary re-renders. If you start to get performance issues, these contexts may need some fine tuning.
+Here are some concepts to help understand the project:
 
-The project also includes _react-router-dom_ already. See example of its use in the `LocalApp` component in `App.tsx`.
+### BGIO BoardProps into React Contexts
 
-The game files, in the `src/game/` directory, can be used by the Local server, but for the node server in `devserver.js` and `server.js` to use them, they must be compiled to JS files. This compilation is run by some of the scripts below, and the files are output to the `server/` directory. Don't use that folder for other stuff.
+The Board component, as a BGIO specific component, receives [the BGIO API as props](https://boardgame.io/documentation/#/api/Client?id=board-props).
 
-### CSS / UI Library used
+The Board in our project splits the BoardProps up into different contexts, and wraps our UI in the Providers for all those contexts. Now our UI components can access BoardProps easily, with hooks, and hopefully without any unnecessary re-renders.
 
-It's called [water.css](https://watercss.kognise.dev/), I chose it because it has no dependencies, it does **not** use classnames (so the JSX markup is not contaminated with classNames) and it's tiny, so you can easily remove it and use something else. Adding it to the project involved no npm install, just adding the following import to our `index.html`:
+#### List of BGIO Contexts
+
+1. useBgioG -- access the BGIO `G` object
+2. useBgioCtx -- access the BGIO `ctx` object
+3. useBgioEvents -- access BGIO game `events` as well as the `reset` action
+4. useMoves -- includes your game moves, as well as `undo` and `redo` from BGIO
+5. useBgioChat -- access chats, send new ones
+6. useBgioClientInfo -- for now, this is a little bit of a catch all, but it includes these BGIO Client related props: `playerID` `log` `matchID` `matchData` `isActive` `isMultiplayer` `isConnected` `credentials`
+7. useBgioLobby -- UNDER CONSTRUCTION, access the BGIO `LobbyClient` object and interact with BGIO Lobby/Server API
+
+See the simple files in `src/components` for examples on how to use the hooks.
+
+### React-Router-Dom is included
+
+This is not a requirement of of BGIO, so feel free to remove it, but this project's Lobby component will likely not be of service anymore (too heavily integrated).
+
+### `server/` is a compiled directory - don't use it
+
+Our node server requires raw javascript. Some of the npm scripts herein involve compiling files and outputting them to the `server/` directory. Don't use that folder for other stuff.
+
+### CSS / UI Library used: [water.css](https://watercss.kognise.dev/)
+
+I chose it because it has no dependencies, it does **not** use classnames (so the JSX markup is not contaminated with classNames) and it's tiny, so you can easily remove it and use something else.
+
+Adding it to the project involved no npm install, just the following import in `index.html`:
 
 ```html
 <!-- in project root /public/index.html -->
@@ -22,15 +63,6 @@ It's called [water.css](https://watercss.kognise.dev/), I chose it because it ha
   href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
 />
 ```
-
-### React hooks included to access BGIO data:
-
-1. usePlayerID
-2. useG
-3. useCtx
-4. useMoves -- includes your game moves, as well as `undo` and `redo` from BGIO
-
-See the file `src/components/ExampleUI.tsx` for an example on how to use the hooks.
 
 ## Available Scripts
 

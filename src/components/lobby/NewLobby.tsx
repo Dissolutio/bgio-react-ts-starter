@@ -7,7 +7,7 @@ import { CreateMatchButton } from "./CreateMatchButton";
 import { GameMatchList } from "./GameMatchList";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
-import useLocalStorage from "hooks/useLocalStorage";
+import { useAuth, useLocalStorage } from "hooks";
 
 export const NewLobby = () => {
   const {
@@ -34,11 +34,11 @@ export const NewLobby = () => {
       playerCredentials: "",
     }
   );
+  const { user } = useAuth();
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<
     LobbyAPI.Match | undefined
   >(undefined);
-
   // computed state
   const numCurrentMatches = lobbyMatches?.[selectedGame]?.length ?? 0;
 
@@ -99,6 +99,10 @@ export const NewLobby = () => {
     if (playerCredentials) {
       //save
       setStoredPlayerCredentials({ matchID, playerCredentials });
+      console.log(
+        `🚀 ~ handleJoinSelectedMatch ~ storedPlayerCredentials`,
+        storedPlayerCredentials
+      );
       // refresh match info
       getMatch(gameName, matchID);
       // set joined match to new match info

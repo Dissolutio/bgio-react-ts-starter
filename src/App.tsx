@@ -2,6 +2,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { NewLobby } from "components/lobby/NewLobby";
 import { Demo } from "./Demo";
 import { BgioLobbyProvider } from "contexts/useBgioLobby";
+import { AuthProvider } from "hooks/useAuth";
 
 // ! Three Options:
 // * Client that connects to its origin server `npm run build`
@@ -24,9 +25,11 @@ export const App = () => {
   } else {
     return (
       <BgioLobbyProvider serverAddress={SERVER}>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AuthProvider>
       </BgioLobbyProvider>
     );
   }

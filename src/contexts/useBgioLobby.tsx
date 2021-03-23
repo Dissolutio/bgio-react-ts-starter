@@ -4,7 +4,7 @@ import { LobbyAPI } from "boardgame.io";
 
 import { MyGameCreateMatchOptions } from "components/lobby/types";
 import { useLocalStorage } from "hooks";
-import { defaultSetupData, myGameNumPlayers } from "game/game";
+import { defaultSetupData, MYGAME_NUMPLAYERS } from "game/game";
 
 export type JoinMatchHandler = (options: JoinMatchOptions) => Promise<void>;
 type LeaveMatchParams = {
@@ -162,7 +162,7 @@ export function BgioLobbyProvider({
   async function handleCreateMatchButton() {
     createMatch(selectedGame, {
       setupData: defaultSetupData,
-      numPlayers: myGameNumPlayers,
+      numPlayers: MYGAME_NUMPLAYERS,
     });
   }
   // join match, then save credentials and proceed to Room

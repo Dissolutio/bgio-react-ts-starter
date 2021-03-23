@@ -1,4 +1,12 @@
-import { MyGameState } from "../../game/game";
+export type MyGameState = {
+  score: {
+    [playerID: string]: number;
+  };
+};
+export type LobbyMatchSetupData = {
+  lobbyDisplayName: string;
+};
+export type MyGameSetupData = MyGameState & LobbyMatchSetupData;
 
 export type MatchPlayerMetadata = {
   id: number;

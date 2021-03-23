@@ -1,15 +1,10 @@
-export type MyGameState = {
-  score: {
-    [playerID: string]: number;
-  };
-};
+import { MyGameSetupData } from "components/lobby/types";
 
-export const defaultSetupData: MyGameState = {
+export const defaultSetupData: MyGameSetupData = {
   score: { "0": 0, "1": 0 },
+  lobbyDisplayName: "",
 };
-
-export const myGameNumPlayers = 2;
-
+export const MYGAME_NUMPLAYERS = 2;
 export const myGame = {
   name: "myGame",
   setup: (ctx, setupData) => {

@@ -9,3 +9,12 @@ nav ul li a {
   padding: 14px 16px;
   text-decoration: none;
 }
+
+/* This gets the debug panel looking normal again, the water.css styles were messing with the button sizes */
+/* 40px overrides the 20px that the panel currently has */
+.debug-panel nav {
+  height: 40px !important;
+}
+.debug-panel button {
+  height: 40px !important;
+}

@@ -45,12 +45,15 @@ const MatchPlayersList = (props: { players: MatchPlayerMetadata[] }) => {
       <li key={playerID}>
         {`${playerID}: `}
         {isPlayer ? (
-          <span style={{ fontWeight: "bold" }}>playerName</span>
+          <span style={{ fontWeight: "bold" }}>{playerName}</span>
         ) : (
           <button
             disabled={!isAuthenticated}
             onClick={(e) =>
-              handleJoinSelectedMatch({ playerID: `${playerID}`, playerName })
+              handleJoinSelectedMatch({
+                playerID: `${playerID}`,
+                playerName: user.name,
+              })
             }
           >
             Join

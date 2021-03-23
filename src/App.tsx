@@ -2,7 +2,7 @@ import { BrowserRouter, Switch, Route, Redirect, Link } from "react-router-dom";
 import Modal from "react-modal";
 
 import { NewLobby } from "components/lobby/NewLobby";
-import { JoinPage } from "components/lobby/JoinPage";
+import { PlayPage } from "components/lobby/PlayPage";
 import { Demo } from "./Demo";
 import { BgioLobbyProvider } from "contexts/useBgioLobby";
 import { AuthProvider, useAuth } from "hooks/useAuth";
@@ -114,8 +114,11 @@ const AppRoutes = () => {
       <PrivateRoute path="/lobby">
         <NewLobby />
       </PrivateRoute>
-      <Route path="/">
-        <Login />
+      <PrivateRoute path="/play">
+        <PlayPage />
+      </PrivateRoute>
+      <Route exact path="/">
+        <NewLobby />
       </Route>
     </Switch>
   );

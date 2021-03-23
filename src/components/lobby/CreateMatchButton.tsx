@@ -1,8 +1,11 @@
-export function CreateMatchButton({
-  createMatchSuccess,
-  createMatchError,
-  handleCreateMatchButton,
-}) {
+import { useBgioLobby } from "contexts";
+
+export function CreateMatchButton() {
+  const {
+    createMatchSuccess,
+    createMatchError,
+    handleCreateMatchButton,
+  } = useBgioLobby();
   return (
     <div>
       <button onClick={handleCreateMatchButton}>Create new match</button>

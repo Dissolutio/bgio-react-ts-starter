@@ -60,7 +60,7 @@ const AppInterior = () => {
   const { modalIsOpen, closeModal } = useModalCtx();
   return (
     <>
-      <AppHeader />
+      <Nav />
       <AppRoutes />
       <Modal
         isOpen={modalIsOpen}
@@ -81,7 +81,7 @@ const AppInterior = () => {
     </>
   );
 };
-const AppHeader = () => {
+const Nav = () => {
   return (
     <nav>
       <ul>
@@ -92,7 +92,7 @@ const AppHeader = () => {
           <Link to="/demo">Demo</Link>
         </li>
         <li>
-          <Link to="/join">Join</Link>
+          <Link to="/lobby">Lobby</Link>
         </li>
         <li>
           <Link to="/login">Login</Link>
@@ -105,17 +105,17 @@ const AppHeader = () => {
 const AppRoutes = () => {
   return (
     <Switch>
-      <Route exact path="/demo">
+      <Route path="/demo">
         <Demo />
       </Route>
       <Route path="/login">
         <Login />
       </Route>
-      <PrivateRoute path="/join">
-        <JoinPage />
+      <PrivateRoute path="/lobby">
+        <NewLobby />
       </PrivateRoute>
       <Route path="/">
-        <NewLobby />
+        <Login />
       </Route>
     </Switch>
   );

@@ -1,25 +1,15 @@
-type Props = {
-  selectLabelText: string;
-  lobbyGames: any[];
-  selectedGame: string;
-  handleSelectGameChange: (e: any) => void;
-};
+import { useBgioLobby } from "contexts";
 
-export const GameSelect = (props: Props) => {
-  const {
-    lobbyGames,
-    selectedGame,
-    handleSelectGameChange,
-    selectLabelText,
-  } = props;
-  const createMatchGameSelectHtmlID = `game-select`;
+export const GameSelect = () => {
+  const { lobbyGames, selectedGame, handleSelectGameChange } = useBgioLobby();
+  const gameSelectHtmlID = `game-select`;
   return (
-    <label htmlFor={createMatchGameSelectHtmlID}>
-      {`${selectLabelText}:`}
+    <label htmlFor={gameSelectHtmlID}>
+      Choose a game:
       <select
         onChange={handleSelectGameChange}
         value={selectedGame}
-        id={createMatchGameSelectHtmlID}
+        id={gameSelectHtmlID}
       >
         {lobbyGames.map((gameName) => (
           <option key={gameName} value={gameName}>

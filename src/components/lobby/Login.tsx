@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useLocation, Link } from "react-router-dom";
 
 import { useAuth } from "hooks";
 
@@ -28,9 +28,6 @@ export const Login = () => {
       setRedirect(wasRedirected);
     } else {
       setSuccess(`Welcome ${inputText}!`);
-      setTimeout(() => {
-        setSuccess("");
-      }, 5000);
     }
   };
 
@@ -62,12 +59,21 @@ export const Login = () => {
           <button type="submit">Submit</button>
         </div>
       </form>
-      {success && <p>{success}</p>}
+      {success && (
+        <p>
+          {success}{" "}
+          <Link to="/lobby" as="button">
+            Go to Lobby
+          </Link>
+        </p>
+      )}
       {isAuthenticated ? (
         <p>
-          <button onClick={signout}>Sign out</button>
+          <button onClick={signout}>Sign out {`${user?.name}`}</button>
         </p>
-      ) : null}
+      ) : (
+        <p>You are not signed in.</p>
+      )}
     </div>
   );
 };

@@ -1,6 +1,20 @@
 import { createContext, useContext, useState } from "react";
-// import { BoardProps } from "boardgame.io/react";
-// import { useBgioClientInfo } from "./useBgioClientInfo";
+
+/*
+```js
+
+const Example = () => {
+  const { toggleModal } = useModalCtx();
+  return (
+    <p>
+        Dev Modal button
+        <button onClick={toggleModal}>TOGGLE MODAL</button>
+      </p>
+  )
+}
+
+```
+*/
 
 type ModalCtxProviderProps = {
   children: React.ReactNode;

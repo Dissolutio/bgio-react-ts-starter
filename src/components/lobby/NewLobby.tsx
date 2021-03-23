@@ -8,7 +8,6 @@ import { GameMatchList } from "./GameMatchList";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
 import { useLocalStorage } from "hooks";
-import { useModalCtx } from "hooks/useModalCtx";
 
 export const NewLobby = () => {
   const {
@@ -28,7 +27,6 @@ export const NewLobby = () => {
     createMatchError,
     getMatchByIDError,
   } = useBgioLobby();
-  const { modalIsOpen, toggleModal, openModal, closeModal } = useModalCtx();
   const [storedPlayerCredentials, setStoredPlayerCredentials] = useLocalStorage(
     "bgio-player-credentials",
     {
@@ -115,10 +113,6 @@ export const NewLobby = () => {
   // return error or game select + rest
   return (
     <>
-      <p>
-        Dev Modal button
-        <button onClick={toggleModal}>TOGGLE MODAL</button>
-      </p>
       {lobbyGamesError ? (
         <p style={{ color: "red" }}>
           {`Error -- Could not retrieve games from server : ${lobbyGamesError}`}

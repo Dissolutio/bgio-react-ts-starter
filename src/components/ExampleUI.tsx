@@ -7,7 +7,7 @@ export const ExampleUI = () => {
   const { G } = useBgioG();
   return (
     <div>
-      <h1 style={{ margin: 0 }}>{`Player ${playerID}'s UI`}</h1>
+      <h1>{`Player ${playerID}'s UI`}</h1>
       <p>{`Player 0 score: ${G?.score["0"] ?? ""}`}</p>
       <p>{`Player 1 score: ${G?.score["1"] ?? ""}`}</p>
       <Controls />

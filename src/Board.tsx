@@ -38,7 +38,6 @@ export function Board(props: MyBoardProps) {
     isConnected,
     credentials,
   } = props;
-  console.log(`🚀 ~ Board ~ log`, log);
   return (
     <BgioClientInfoProvider
       log={log}

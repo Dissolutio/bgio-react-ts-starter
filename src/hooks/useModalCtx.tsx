@@ -17,7 +17,7 @@ const ModalCtx = createContext<ModalCtxValue | undefined>(undefined);
 export function ModalCtxProvider(props: ModalCtxProviderProps) {
   const { children } = props;
   //   const { playerID } = useBgioClientInfo();
-  const [modalIsOpen, setIsOpen] = useState(true);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   const toggleModal = () => {
     setIsOpen((s) => !s);

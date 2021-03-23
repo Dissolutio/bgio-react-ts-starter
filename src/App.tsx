@@ -3,6 +3,11 @@ import { NewLobby } from "components/lobby/NewLobby";
 import { Demo } from "./Demo";
 import { BgioLobbyProvider } from "contexts/useBgioLobby";
 import { AuthProvider } from "hooks/useAuth";
+import Modal from "react-modal";
+import { ModalCtxProvider, useModalCtx } from "hooks/useModalCtx";
+
+// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
+Modal.setAppElement("#root");
 
 // ! Three Options:
 // * Client that connects to its origin server `npm run build`
@@ -19,6 +24,17 @@ const deploymentServerAddr = `${protocol}//${hostname}${port ? `${port}` : ``}`;
 const localServerAddr = `http://localhost:8000`;
 const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr;
 
+const modalStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+
 export const App = () => {
   if (isLocalApp) {
     return <Demo />;
@@ -26,13 +42,40 @@ export const App = () => {
     return (
       <BgioLobbyProvider serverAddress={SERVER}>
         <AuthProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          <ModalCtxProvider>
+            <BrowserRouter>
+              <AppInterior />
+            </BrowserRouter>
+          </ModalCtxProvider>
         </AuthProvider>
       </BgioLobbyProvider>
     );
   }
+};
+
+const AppInterior = () => {
+  const { modalIsOpen, toggleModal, openModal, closeModal } = useModalCtx();
+  return (
+    <>
+      <AppRoutes />
+      <Modal
+        isOpen={modalIsOpen}
+        style={modalStyles}
+        contentLabel="Example Modal"
+      >
+        <h2>Hello</h2>
+        <button onClick={closeModal}>close</button>
+        <div>I am a modal</div>
+        <form>
+          <input />
+          <button>tab navigation</button>
+          <button>stays</button>
+          <button>inside</button>
+          <button>the modal</button>
+        </form>
+      </Modal>
+    </>
+  );
 };
 
 const AppRoutes = () => {

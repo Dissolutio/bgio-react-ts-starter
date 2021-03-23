@@ -8,6 +8,7 @@ import { GameMatchList } from "./GameMatchList";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
 import { useAuth, useLocalStorage } from "hooks";
+import { useModalCtx } from "hooks/useModalCtx";
 
 export const NewLobby = () => {
   const {
@@ -27,6 +28,7 @@ export const NewLobby = () => {
     createMatchError,
     getMatchByIDError,
   } = useBgioLobby();
+  const { modalIsOpen, toggleModal, openModal, closeModal } = useModalCtx();
   const [storedPlayerCredentials, setStoredPlayerCredentials] = useLocalStorage(
     "bgio-player-credentials",
     {
@@ -120,13 +122,16 @@ export const NewLobby = () => {
           <button onClick={getLobbyGames}>Retry</button>
         </p>
       ) : (
-        <GameSelect
-          selectLabelText={`Choose a game`}
-          lobbyGames={lobbyGames}
-          selectedGame={selectedGame}
-          handleSelectGameChange={handleSelectGameChange}
-        />
+        <>
+          <GameSelect
+            selectLabelText={`Choose a game`}
+            lobbyGames={lobbyGames}
+            selectedGame={selectedGame}
+            handleSelectGameChange={handleSelectGameChange}
+          />
+        </>
       )}
+      <button onClick={toggleModal}>TOGGLE MODAL</button>
       {/* First game will be auto-selected, so this should display if games are successfully fetched */}
       {selectedGame ? (
         <>

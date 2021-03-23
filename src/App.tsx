@@ -1,10 +1,13 @@
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect, Link } from "react-router-dom";
+import Modal from "react-modal";
+
 import { NewLobby } from "components/lobby/NewLobby";
+import { JoinPage } from "components/lobby/JoinPage";
 import { Demo } from "./Demo";
 import { BgioLobbyProvider } from "contexts/useBgioLobby";
-import { AuthProvider } from "hooks/useAuth";
-import Modal from "react-modal";
+import { AuthProvider, useAuth } from "hooks/useAuth";
 import { ModalCtxProvider, useModalCtx } from "hooks/useModalCtx";
+import { Login } from "components/lobby/Login";
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#root");
@@ -54,9 +57,10 @@ export const App = () => {
 };
 
 const AppInterior = () => {
-  const { modalIsOpen, toggleModal, openModal, closeModal } = useModalCtx();
+  const { modalIsOpen, closeModal } = useModalCtx();
   return (
     <>
+      <AppHeader />
       <AppRoutes />
       <Modal
         isOpen={modalIsOpen}
@@ -77,6 +81,26 @@ const AppInterior = () => {
     </>
   );
 };
+const AppHeader = () => {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/demo">Demo</Link>
+        </li>
+        <li>
+          <Link to="/join">Join</Link>
+        </li>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+};
 
 const AppRoutes = () => {
   return (
@@ -84,9 +108,36 @@ const AppRoutes = () => {
       <Route exact path="/demo">
         <Demo />
       </Route>
+      <Route path="/login">
+        <Login />
+      </Route>
+      <PrivateRoute path="/join">
+        <JoinPage />
+      </PrivateRoute>
       <Route path="/">
         <NewLobby />
       </Route>
     </Switch>
   );
 };
+
+function PrivateRoute({ children, ...rest }) {
+  const { isAuthenticated } = useAuth();
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}

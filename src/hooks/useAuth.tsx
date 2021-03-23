@@ -2,24 +2,26 @@
 
 import React, { useState, useContext, createContext } from "react";
 
-type User = { name: string };
-
-const AuthContext = createContext(undefined);
-
-export function AuthProvider({ children }) {
-  const auth = useProvideAuth();
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
-}
-
-export const useAuth = () => {
-  return useContext(AuthContext);
+type AuthProviderProps = {
+  children: React.ReactNode;
 };
 
-function useProvideAuth() {
+type User = { name: string };
+
+type AuthValue = {
+  user: User;
+  isAuthenticated: boolean;
+  signin: (name: string) => void;
+  signout: () => void;
+};
+const AuthContext = createContext<AuthValue | undefined>(undefined);
+
+export function AuthProvider(props: AuthProviderProps) {
+  const { children } = props;
   //todo: use useLocalStorage
   const [user, setUser] = useState<User | undefined>({ name: "" });
+  const isAuthenticated = Boolean(user?.name);
   // empty string will be falsy, keeping this simple and replaceable
-  const authUser = user?.name ?? "";
   const signin = (name: string) => {
     setUser({ name: name });
   };
@@ -27,9 +29,20 @@ function useProvideAuth() {
     setUser({ name: "" });
   };
 
-  return {
-    user: authUser,
+  const auth = {
+    user: user,
+    isAuthenticated,
     signin,
     signout,
   };
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
 }

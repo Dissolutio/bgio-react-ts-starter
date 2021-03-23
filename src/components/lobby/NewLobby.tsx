@@ -7,7 +7,7 @@ import { CreateMatchButton } from "./CreateMatchButton";
 import { GameMatchList } from "./GameMatchList";
 import { GameSelect } from "./GameSelect";
 import { MatchListItem } from "./MatchListItem";
-import { useAuth, useLocalStorage } from "hooks";
+import { useLocalStorage } from "hooks";
 import { useModalCtx } from "hooks/useModalCtx";
 
 export const NewLobby = () => {
@@ -36,7 +36,6 @@ export const NewLobby = () => {
       playerCredentials: "",
     }
   );
-  const { user } = useAuth();
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<
     LobbyAPI.Match | undefined
@@ -116,6 +115,10 @@ export const NewLobby = () => {
   // return error or game select + rest
   return (
     <>
+      <p>
+        Dev Modal button
+        <button onClick={toggleModal}>TOGGLE MODAL</button>
+      </p>
       {lobbyGamesError ? (
         <p style={{ color: "red" }}>
           {`Error -- Could not retrieve games from server : ${lobbyGamesError}`}
@@ -131,7 +134,6 @@ export const NewLobby = () => {
           />
         </>
       )}
-      <button onClick={toggleModal}>TOGGLE MODAL</button>
       {/* First game will be auto-selected, so this should display if games are successfully fetched */}
       {selectedGame ? (
         <>

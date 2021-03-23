@@ -8,7 +8,7 @@ export const Login = () => {
   const handleTextInputChange = (e) => {
     setInputText(e.target.value);
   };
-  const { isAuthenticated, user, signin, signout } = useAuth();
+  const { isAuthenticated, storedCredentials, signin, signout } = useAuth();
   //   if we were redirected here, we'll redirect back once authenticated
   const location = useLocation();
   const wasRedirected = location?.state?.from?.pathname;
@@ -18,8 +18,8 @@ export const Login = () => {
 
   // effect -- auto-fill input on auth change
   useEffect(() => {
-    setInputText(user?.name ?? "");
-  }, [user]);
+    setInputText(storedCredentials?.playerName ?? "");
+  }, [storedCredentials]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,7 +69,9 @@ export const Login = () => {
       )}
       {isAuthenticated ? (
         <p>
-          <button onClick={signout}>Sign out {`${user?.name}`}</button>
+          <button onClick={signout}>
+            Sign out {`${storedCredentials?.playerName}`}
+          </button>
         </p>
       ) : (
         <p>You are not signed in.</p>

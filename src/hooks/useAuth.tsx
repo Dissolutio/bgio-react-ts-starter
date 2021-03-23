@@ -1,42 +1,75 @@
 // Hook (use-auth.js)
 
-import React, { useState, useContext, createContext } from "react";
+import React, { useContext, createContext } from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
-type AuthProviderProps = {
-  children: React.ReactNode;
+const localStorageKey_bgioCredentials = "bgio-player-credentials";
+
+type StoredCredentials = {
+  playerName?: string;
+  matchID?: string;
+  gameName?: string;
+  playerCredentials?: string;
+  playerID?: string;
+};
+const initialCredentials: StoredCredentials = {
+  playerName: "",
+  matchID: "",
+  gameName: "",
+  playerCredentials: "",
+  playerID: "",
 };
 
-type User = { name: string };
-
 type AuthValue = {
-  user: User;
+  storedCredentials: StoredCredentials;
   isAuthenticated: boolean;
   signin: (name: string) => void;
   signout: () => void;
+  updateCredentials: (newCredentials: StoredCredentials) => Promise<void>;
 };
 const AuthContext = createContext<AuthValue | undefined>(undefined);
-
+type AuthProviderProps = {
+  children: React.ReactNode;
+};
 export function AuthProvider(props: AuthProviderProps) {
   const { children } = props;
-  //todo: use useLocalStorage
-  const [user, setUser] = useState<User | undefined>({ name: "" });
-  const isAuthenticated = Boolean(user?.name);
-  // empty string will be falsy, keeping this simple and replaceable
-  const signin = (name: string) => {
-    setUser({ name: name });
+  // const [storedCredentials, setStoredCredentials] = useState<StoredCredentials | undefined>();
+  const [storedCredentials, setStoredCredentials] = useLocalStorage(
+    localStorageKey_bgioCredentials,
+    initialCredentials
+  );
+  // empty string will be falsy, keeping isAuthenticated simple and replaceable
+  const isAuthenticated = Boolean(storedCredentials?.playerName);
+  const signin = (newName: string) => {
+    const newCredentials = {
+      ...storedCredentials,
+      playerName: newName,
+    };
+    setStoredCredentials(newCredentials);
   };
-  const signout = () => {
-    setUser({ name: "" });
+  const signout = async () => {
+    setStoredCredentials(initialCredentials);
+  };
+  const updateCredentials = async (newCredentials: StoredCredentials) => {
+    setStoredCredentials({
+      ...storedCredentials,
+      ...newCredentials,
+    });
   };
 
-  const auth = {
-    user: user,
-    isAuthenticated,
-    signin,
-    signout,
-  };
-
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        storedCredentials: storedCredentials,
+        isAuthenticated,
+        updateCredentials,
+        signin,
+        signout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

@@ -3,16 +3,15 @@ import { LobbyClient } from "boardgame.io/client";
 import { LobbyAPI } from "boardgame.io";
 
 import { MyGameCreateMatchOptions } from "components/lobby/types";
-import { useLocalStorage } from "hooks";
-import { defaultSetupData, MYGAME_NUMPLAYERS } from "game/game";
+import { useAuth } from "hooks";
+import { defaultSetupData } from "game/game";
 
-export type JoinMatchHandler = (options: JoinMatchOptions) => Promise<void>;
 type LeaveMatchParams = {
   gameName: string;
   matchID: string;
   options: LeaveMatchOptions;
 };
-export type LeaveMatchOptions = {
+type LeaveMatchOptions = {
   playerID: string;
   credentials: string;
 };
@@ -21,7 +20,7 @@ type JoinMatchParams = {
   matchID: string;
   options: JoinMatchOptions;
 };
-export type JoinMatchOptions = {
+type JoinMatchOptions = {
   playerID: string;
   playerName: string;
   data?: any;
@@ -33,10 +32,10 @@ type LobbyMatchesError = {
   [gameName: string]: string;
 };
 type StoredCredentials = {
-  matchID: string;
-  playerCredentials: string;
-  playerID: string;
-  playerName: string;
+  playerName?: string;
+  matchID?: string;
+  playerCredentials?: string;
+  playerID?: string;
 };
 type BgioLobbyCtxValue = {
   lobbyClient: LobbyClient | undefined;
@@ -65,9 +64,9 @@ type BgioLobbyCtxValue = {
   handleSelectGameChange: (e) => void;
   handleSelectMatch: (match: LobbyAPI.Match) => Promise<void>;
   handleCreateMatchButton: () => Promise<void>;
-  handleJoinSelectedMatch: (options: JoinMatchOptions) => Promise<void>;
+  handleJoinSelectedMatch: (playerID: string) => Promise<void>;
+  handleLeaveJoinedMatch: () => Promise<boolean>;
 };
-
 type BgioLobbyProviderProps = {
   children: React.ReactNode;
   serverAddress: string;
@@ -81,11 +80,11 @@ export function BgioLobbyProvider({
   serverAddress,
   children,
 }: BgioLobbyProviderProps) {
+  const { updateCredentials, storedCredentials } = useAuth();
   // instantiate the boardgame.io LobbyClient
   const lobbyClientRef = React.useRef(
     new LobbyClient({ server: `${serverAddress}` })
   );
-  const localStorageKey_bgioCredentials = "bgio-player-credentials";
   const lobbyClient = lobbyClientRef.current;
   // STATE
   const [lobbyGames, setLobbyGames] = useState<string[]>([]);
@@ -98,16 +97,6 @@ export function BgioLobbyProvider({
   const [createMatchError, setCreateMatchError] = useState("");
   const [getMatchByIDSuccess, setGetMatchByIDSuccess] = useState("");
   const [getMatchByIDError, setGetMatchByIDError] = useState("");
-
-  const [storedCredentials, setStoredCredentials] = useLocalStorage(
-    localStorageKey_bgioCredentials,
-    {
-      matchID: "",
-      playerCredentials: "",
-      playerID: "",
-      playerName: "",
-    }
-  );
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<
     LobbyAPI.Match | undefined
@@ -142,7 +131,7 @@ export function BgioLobbyProvider({
     setSelectedGame(e.target.value);
   };
   // handler select match
-  const handleSelectMatch = async (match: LobbyAPI.Match) => {
+  async function handleSelectMatch(match: LobbyAPI.Match) {
     // optimistic update
     setSelectedMatch(match);
     // refresh the selected match
@@ -157,7 +146,7 @@ export function BgioLobbyProvider({
       setSelectedMatch(undefined);
       getLobbyMatches(selectedGame);
     }
-  };
+  }
   // handler createMatch
   async function handleCreateMatchButton() {
     createMatch(selectedGame, {
@@ -166,45 +155,71 @@ export function BgioLobbyProvider({
     });
   }
   // join match, then save credentials and proceed to Room
-  async function handleJoinSelectedMatch(options: JoinMatchOptions) {
-    const { playerID, playerName } = options;
+  async function handleJoinSelectedMatch(playerID: string) {
+    const playerName = storedCredentials.playerName;
     const matchID = selectedMatch.matchID;
-    const gameName = `${selectedGame}`;
+    const gameName = selectedGame;
     const playerCredentials = await joinMatch({
       gameName,
       matchID,
-      options,
+      options: {
+        playerID,
+        playerName,
+      },
     });
     if (playerCredentials) {
       const newCredentials = {
+        playerName,
         matchID,
+        gameName,
         playerCredentials,
         playerID,
-        playerName,
       };
       //save
-      setStoredCredentials(newCredentials);
+      updateCredentials(newCredentials);
       // refresh match info
       const joinedMatch = await getMatch(gameName, matchID);
-      //double check the server has us in there
       if (joinedMatch) {
+        // update display first
+        setSelectedMatch(joinedMatch);
+        //double check the server has matching player data
         const serverPlayer = joinedMatch.players.find(
           (playerMetadata) => playerMetadata.id.toString() === playerID
         );
         const serverPlayerName = serverPlayer?.name;
         const isConfirmedJoin = serverPlayerName === playerName;
-        console.log(
-          `🚀 ~ handleJoinSelectedMatch ~ isConfirmedJoin`,
-          isConfirmedJoin
-        );
+        // set joined match to new match info
+        if (isConfirmedJoin) {
+          setJoinedMatch(joinedMatch);
+        }
       }
-      // set joined match to new match info
-      setJoinedMatch(joinedMatch);
     } else {
       console.log(`🚀 handleJoinSelectedMatch ~ FAILED TO JOIN`);
     }
   }
-
+  // handle leave current match
+  async function handleLeaveJoinedMatch() {
+    const {
+      gameName,
+      matchID,
+      playerID,
+      playerCredentials,
+    } = storedCredentials;
+    setJoinedMatch(undefined);
+    const isLeft = await leaveMatch({
+      gameName,
+      matchID,
+      options: { playerID, credentials: playerCredentials },
+    });
+    setJoinedMatch(undefined);
+    updateCredentials({
+      gameName: "",
+      matchID: "",
+      playerID: "",
+      playerCredentials: "",
+    });
+    return isLeft;
+  }
   // BGIO Lobby API
   async function getLobbyGames() {
     try {
@@ -291,7 +306,6 @@ export function BgioLobbyProvider({
       console.error(`🚀 ~ joinMatch ~ error`, error);
     }
   }
-
   async function leaveMatch(params: LeaveMatchParams) {
     const { gameName, matchID, options } = params;
     const { playerID, credentials } = options;
@@ -301,9 +315,10 @@ export function BgioLobbyProvider({
         matchID,
         options
       );
-      return leftMatch;
+      return true;
     } catch (error) {
       console.error(`🚀 ~ leaveMatch ~ error`, error);
+      return false;
     }
   }
 
@@ -333,6 +348,7 @@ export function BgioLobbyProvider({
         handleSelectMatch,
         handleCreateMatchButton,
         handleJoinSelectedMatch,
+        handleLeaveJoinedMatch,
       }}
     >
       {children}

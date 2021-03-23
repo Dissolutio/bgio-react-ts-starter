@@ -11,7 +11,9 @@ export const NewLobby = () => {
     lobbyGamesError,
     selectedGame,
     joinedMatch,
+    handleLeaveJoinedMatch,
   } = useBgioLobby();
+  const joinedMatchID = joinedMatch?.matchID;
   // If we've joined a match, time to go to play page
   // if (joinedMatch?.matchID) {
   //   return <Redirect to="/play" />;
@@ -33,6 +35,13 @@ export const NewLobby = () => {
       {selectedGame ? (
         <>
           <CreateMatchButton />
+          {joinedMatchID ? (
+            <div>
+              <button onClick={handleLeaveJoinedMatch}>
+                Leave Joined Game
+              </button>
+            </div>
+          ) : null}
           <SelectedGameMatchList />
           <SelectedMatchDisplay />
         </>

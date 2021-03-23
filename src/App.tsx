@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import { NewLobby } from "components/lobby/NewLobby";
 import { PlayPage } from "components/lobby/PlayPage";
 import { Demo } from "./Demo";
-import { BgioLobbyProvider } from "contexts/useBgioLobby";
+import { BgioLobbyProvider, useBgioLobby } from "contexts/useBgioLobby";
 import { AuthProvider, useAuth } from "hooks/useAuth";
 import { ModalCtxProvider, useModalCtx } from "hooks/useModalCtx";
 import { Login } from "components/lobby/Login";
@@ -43,21 +43,25 @@ export const App = () => {
     return <Demo />;
   } else {
     return (
-      <BgioLobbyProvider serverAddress={SERVER}>
-        <AuthProvider>
+      <AuthProvider>
+        <BgioLobbyProvider serverAddress={SERVER}>
           <ModalCtxProvider>
             <BrowserRouter>
               <AppInterior />
             </BrowserRouter>
           </ModalCtxProvider>
-        </AuthProvider>
-      </BgioLobbyProvider>
+        </BgioLobbyProvider>
+      </AuthProvider>
     );
   }
 };
 
 const AppInterior = () => {
   const { modalIsOpen, closeModal } = useModalCtx();
+  const { storedCredentials } = useAuth();
+  console.log(`🚀 ~ AppInterior ~ storedCredentials`, storedCredentials);
+  const { joinedMatch } = useBgioLobby();
+  console.log(`🚀 ~ AppInterior ~ joinedMatch`, joinedMatch);
   return (
     <>
       <Nav />
@@ -96,6 +100,9 @@ const Nav = () => {
         </li>
         <li>
           <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/play">Play</Link>
         </li>
       </ul>
     </nav>

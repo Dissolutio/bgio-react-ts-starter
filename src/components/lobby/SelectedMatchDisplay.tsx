@@ -31,7 +31,7 @@ export const SelectedMatchDisplay = () => {
 };
 const MatchPlayersList = (props: { players: MatchPlayerMetadata[] }) => {
   const { players } = props;
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { handleJoinSelectedMatch } = useBgioLobby();
   const playersJSX = players.map((playerMetadata) => {
     const playerID = playerMetadata.id;
@@ -49,12 +49,7 @@ const MatchPlayersList = (props: { players: MatchPlayerMetadata[] }) => {
         ) : (
           <button
             disabled={!isAuthenticated}
-            onClick={(e) =>
-              handleJoinSelectedMatch({
-                playerID: `${playerID}`,
-                playerName: user.name,
-              })
-            }
+            onClick={(e) => handleJoinSelectedMatch(`${playerID}`)}
           >
             Join
           </button>

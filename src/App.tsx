@@ -1,16 +1,18 @@
 import { BrowserRouter, Switch, Route, Redirect, Link } from "react-router-dom";
 import Modal from "react-modal";
 
-import { NewLobby } from "components/lobby/NewLobby";
-import { PlayPage } from "components/lobby/PlayPage";
-import { Demo } from "./Demo";
-import { BgioLobbyProvider, useBgioLobby } from "contexts/useBgioLobby";
+import { BgioLobbyProvider } from "contexts/useBgioLobby";
 import { AuthProvider, useAuth } from "hooks/useAuth";
 import { ModalCtxProvider, useModalCtx } from "hooks/useModalCtx";
+import { NewLobby } from "components/lobby/NewLobby";
 import { Login } from "components/lobby/Login";
+import { PlayPage } from "components/lobby/PlayPage";
+import { Client } from "boardgame.io/react";
+import { Local, SocketIO } from "boardgame.io/multiplayer";
+import { Debug } from "boardgame.io/debug";
 
-// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-Modal.setAppElement("#root");
+import { myGame } from "./game/game";
+import { Board } from "./Board";
 
 // ! Three Options:
 // * Client that connects to its origin server `npm run build`
@@ -27,20 +29,34 @@ const deploymentServerAddr = `${protocol}//${hostname}${port ? `${port}` : ``}`;
 const localServerAddr = `http://localhost:8000`;
 const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr;
 
-const modalStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
+// Enable Redux DevTools in development
+const reduxDevTools =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__();
+
+const bgioClientOptions = {
+  game: myGame,
+  board: Board,
+  numPlayers: 2,
 };
+
+export const DemoGameClient = Client({
+  ...bgioClientOptions,
+  multiplayer: Local(),
+  enhancer: reduxDevTools,
+  debug: { impl: Debug },
+});
+
+export const MultiplayerGameClient = Client({
+  ...bgioClientOptions,
+  multiplayer: SocketIO({ server: SERVER }),
+  // will disable this when ready to deploy
+  debug: { impl: Debug },
+});
 
 export const App = () => {
   if (isLocalApp) {
-    return <Demo />;
+    return <DemoGameClient matchID="matchID" playerID="0" />;
   } else {
     return (
       <AuthProvider>
@@ -56,16 +72,60 @@ export const App = () => {
   }
 };
 
+// for react-modal
+// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
+Modal.setAppElement("#root");
+const modalStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+
 const AppInterior = () => {
   const { modalIsOpen, closeModal } = useModalCtx();
-  const { storedCredentials } = useAuth();
-  console.log(`🚀 ~ AppInterior ~ storedCredentials`, storedCredentials);
-  const { joinedMatch } = useBgioLobby();
-  console.log(`🚀 ~ AppInterior ~ joinedMatch`, joinedMatch);
   return (
     <>
-      <Nav />
-      <AppRoutes />
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/demo">Demo</Link>
+          </li>
+          <li>
+            <Link to="/lobby">Lobby</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/play">Play</Link>
+          </li>
+        </ul>
+      </nav>
+      <Switch>
+        <Route path="/demo">
+          <DemoGameClient matchID="matchID" playerID="0" />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <PrivateRoute path="/lobby">
+          <NewLobby />
+        </PrivateRoute>
+        <PrivateRoute path="/play">
+          <PlayPage />
+        </PrivateRoute>
+        <Route exact path="/">
+          <NewLobby />
+        </Route>
+      </Switch>
       <Modal
         isOpen={modalIsOpen}
         style={modalStyles}
@@ -83,51 +143,6 @@ const AppInterior = () => {
         </form>
       </Modal>
     </>
-  );
-};
-const Nav = () => {
-  return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/demo">Demo</Link>
-        </li>
-        <li>
-          <Link to="/lobby">Lobby</Link>
-        </li>
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
-        <li>
-          <Link to="/play">Play</Link>
-        </li>
-      </ul>
-    </nav>
-  );
-};
-
-const AppRoutes = () => {
-  return (
-    <Switch>
-      <Route path="/demo">
-        <Demo />
-      </Route>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <PrivateRoute path="/lobby">
-        <NewLobby />
-      </PrivateRoute>
-      <PrivateRoute path="/play">
-        <PlayPage />
-      </PrivateRoute>
-      <Route exact path="/">
-        <NewLobby />
-      </Route>
-    </Switch>
   );
 };
 

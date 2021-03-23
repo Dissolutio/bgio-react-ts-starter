@@ -4,7 +4,7 @@ import { LobbyAPI } from "boardgame.io";
 
 import { MyGameCreateMatchOptions } from "components/lobby/types";
 import { useAuth } from "hooks";
-import { defaultSetupData } from "game/game";
+import { defaultSetupData, MYGAME_NUMPLAYERS } from "game/game";
 
 type LeaveMatchParams = {
   gameName: string;

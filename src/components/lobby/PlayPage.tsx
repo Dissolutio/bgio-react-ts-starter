@@ -1,18 +1,14 @@
-import { useBgioLobby } from "contexts";
+import { MultiplayerGameClient } from "App";
+import { useAuth } from "hooks";
 
-interface Props {}
-
-export const PlayPage = (props: Props) => {
-  const {
-    getLobbyGames,
-    lobbyGamesError,
-    selectedGame,
-    joinedMatch,
-    storedCredentials,
-  } = useBgioLobby();
+export const PlayPage = () => {
+  const { storedCredentials } = useAuth();
+  const { playerID, matchID, playerCredentials } = storedCredentials;
   return (
-    <div>
-      <h1>{`PLAY PAGE! Match ID: ${joinedMatch?.matchID}`}</h1>
-    </div>
+    <MultiplayerGameClient
+      matchID={matchID}
+      playerID={playerID}
+      credentials={playerCredentials}
+    />
   );
 };

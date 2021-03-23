@@ -10,8 +10,17 @@ nav ul li a {
   text-decoration: none;
 }
 
-/* This gets the debug panel looking normal again, the water.css styles were messing with the button sizes */
+/* This gets the debug panel looking normal again, the water.css styles were messing with the button sizes, some colors */
 /* 40px overrides the 20px that the panel currently has */
+.debug-panel strong {
+  color: black !important;
+}
+.debug-panel button {
+  color: black !important;
+}
+.debug-panel button.current {
+  color: white !important;
+}
 .debug-panel nav {
   height: 40px !important;
 }

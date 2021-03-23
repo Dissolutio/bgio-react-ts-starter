@@ -25,9 +25,5 @@ const GameClient = Client({
 });
 
 export const Demo = () => {
-  return (
-    <div style={{ backgroundColor: "#fff", minHeight: "100vh" }}>
-      <GameClient matchID="matchID" playerID="0" />
-    </div>
-  );
+  return <GameClient matchID="matchID" playerID="0" />;
 };

@@ -1,0 +1,11 @@
+nav ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+nav ul li a {
+  padding: 14px 16px;
+  text-decoration: none;
+}

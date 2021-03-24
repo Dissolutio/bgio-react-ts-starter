@@ -1,4 +1,4 @@
-import { MyGameSetupData } from "components/lobby/types";
+import { MyGameSetupData } from "../components/lobby/types";
 
 export const defaultSetupData: MyGameSetupData = {
   score: { "0": 0, "1": 0 },

@@ -31,7 +31,9 @@ const isLocalApp = isDevEnv && !isSeparateServer;
 
 // use appropriate address for server
 const { protocol, hostname, port } = window.location;
-const deploymentServerAddr = `${protocol}//${hostname}${port ? `${port}` : ``}`;
+const deploymentServerAddr = `${protocol}//${hostname}${
+  port ? `:${port}` : ``
+}`;
 const localServerAddr = `http://localhost:8000`;
 const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr;
 

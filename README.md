@@ -54,6 +54,8 @@ Our node server requires raw javascript. Some of the npm scripts herein involve 
 
 I chose it because it has no dependencies, it does **not** use classnames (so the JSX markup is not contaminated with classNames) and it's tiny, so you can easily remove it and use something else.
 
+I did have to adjust some styles, these adjustments are in `index.css` and largely do not use classnames except those already present in the BGIO debugger.
+
 Adding it to the project involved no npm install, just the following import in `index.html`:
 
 ```html

@@ -58,13 +58,15 @@ export const DemoGameClient = Client({
 export const MultiplayerGameClient = Client({
   ...bgioClientOptions,
   multiplayer: SocketIO({ server: SERVER }),
-  // will disable this when ready to deploy
-  debug: { impl: Debug },
 });
 
 const PlayPage = () => {
   const { storedCredentials } = useAuth();
   const { playerID, matchID, playerCredentials } = storedCredentials;
+  //TODO
+  // if (!playerID || !matchID || !playerCredentials) {
+  //   <h2>Sorry, you have not joined a game yet!</h2>;
+  // }
   return (
     <MultiplayerGameClient
       matchID={matchID}

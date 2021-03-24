@@ -1,39 +1,37 @@
 import * as React from 'react';
 import { BoardProps } from 'boardgame.io/react';
 
-type MovesProviderProps = {
+type BgioMovesProviderProps = {
   children: React.ReactNode;
   moves: BoardProps['moves'];
-  events: BoardProps['events'];
   undo: BoardProps['undo'];
   redo: BoardProps['redo'];
 };
-const MovesContext = React.createContext<
+const BgioMovesContext = React.createContext<
   | {
       moves: BoardProps['moves'];
-      events: BoardProps['events'];
       undo: BoardProps['undo'];
       redo: BoardProps['redo'];
     }
   | undefined
 >(undefined);
-export function MovesProvider({
+export function BgioMovesProvider({
   moves,
-  events,
   undo,
   redo,
   children,
-}: MovesProviderProps) {
+}: BgioMovesProviderProps) {
   return (
-    <MovesContext.Provider value={{ moves, events, undo, redo }}>
+    <BgioMovesContext.Provider value={{ moves,
+      undo, redo }}>
       {children}
-    </MovesContext.Provider>
+    </BgioMovesContext.Provider>
   );
 }
-export function useMoves() {
-  const context = React.useContext(MovesContext);
+export function useBgioMoves() {
+  const context = React.useContext(BgioMovesContext);
   if (context === undefined) {
-    throw new Error('useMoves must be used within a MovesProvider');
+    throw new Error('useBgioMoves must be used within a BgioMovesProvider');
   }
   return context;
 }

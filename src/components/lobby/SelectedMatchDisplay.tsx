@@ -1,6 +1,6 @@
 import { useBgioLobby } from "contexts";
 import { useAuth } from "hooks";
-import { MatchPlayerMetadata } from "./types";
+import { MatchPlayerMetadata } from "./NewLobby";
 
 export const SelectedMatchDisplay = () => {
   const { selectedMatch } = useBgioLobby();

@@ -1,9 +1,30 @@
-import { Redirect } from "react-router-dom";
 import { useBgioLobby } from "contexts";
 import { CreateMatchButton } from "./CreateMatchButton";
 import { SelectedGameMatchList } from "./SelectedGameMatchList";
 import { GameSelect } from "./GameSelect";
 import { SelectedMatchDisplay } from "./SelectedMatchDisplay";
+export type MyGameState = {
+  score: {
+    [playerID: string]: number;
+  };
+};
+export type LobbyMatchSetupData = {
+  lobbyDisplayName: string;
+};
+export type MyGameSetupData = MyGameState & LobbyMatchSetupData;
+
+export type MatchPlayerMetadata = {
+  id: number;
+  name?: string;
+  credentials?: string;
+  data?: any;
+  isConnected?: boolean;
+};
+export type MyGameCreateMatchOptions = {
+  setupData: MyGameState;
+  numPlayers: number;
+  unlisted?: boolean;
+};
 
 export const NewLobby = () => {
   const {

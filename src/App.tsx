@@ -30,7 +30,9 @@ const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER);
 const isLocalApp = isDevEnv && !isSeparateServer;
 
 // use appropriate address for server
-const { protocol, hostname, port } = window.location;
+const hostname = window?.location?.hostname ?? "";
+const protocol = window?.location?.protocol ?? "";
+const port = window?.location?.port ?? "";
 const deploymentServerAddr = `${protocol}//${hostname}${
   port ? `:${port}` : ``
 }`;
@@ -39,6 +41,7 @@ const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr;
 
 // Enable Redux DevTools in development
 const reduxDevTools =
+  window &&
   (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
   (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 

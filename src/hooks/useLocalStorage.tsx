@@ -49,6 +49,9 @@ export function useLocalStorage<T>(
 
   // set/remove localStorage listeners (1 native, 1 custom)
   useEffect(() => {
+    if (typeof window == "undefined") {
+      return;
+    }
     const handleStorageChange = () => {
       setStoredValue(readValue());
     };

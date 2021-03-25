@@ -1,6 +1,4 @@
-import { MyGameSetupData } from "../components/lobby/types";
-
-export const defaultSetupData: MyGameSetupData = {
+export const defaultSetupData = {
   score: { "0": 0, "1": 0 },
   lobbyDisplayName: "",
 };

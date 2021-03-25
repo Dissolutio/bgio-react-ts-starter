@@ -1,3 +1,8 @@
+export type MyGameState = {
+  score: {
+    [playerID: string]: number;
+  };
+};
 export const defaultSetupData = {
   score: { "0": 0, "1": 0 },
   lobbyDisplayName: "",

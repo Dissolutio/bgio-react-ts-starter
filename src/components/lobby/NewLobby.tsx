@@ -1,13 +1,10 @@
 import { useBgioLobby } from "contexts";
+import { MyGameState } from "game/game";
 import { CreateMatchButton } from "./CreateMatchButton";
 import { SelectedGameMatchList } from "./SelectedGameMatchList";
 import { GameSelect } from "./GameSelect";
 import { SelectedMatchDisplay } from "./SelectedMatchDisplay";
-export type MyGameState = {
-  score: {
-    [playerID: string]: number;
-  };
-};
+
 export type LobbyMatchSetupData = {
   lobbyDisplayName: string;
 };
@@ -19,11 +16,6 @@ export type MatchPlayerMetadata = {
   credentials?: string;
   data?: any;
   isConnected?: boolean;
-};
-export type MyGameCreateMatchOptions = {
-  setupData: MyGameState;
-  numPlayers: number;
-  unlisted?: boolean;
 };
 
 export const NewLobby = () => {

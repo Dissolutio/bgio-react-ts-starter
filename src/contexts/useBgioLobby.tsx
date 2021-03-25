@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { LobbyClient } from "boardgame.io/client";
 import { LobbyAPI } from "boardgame.io";
 
-import { MyGameCreateMatchOptions } from "components/lobby/types";
 import { useAuth } from "hooks";
-import { defaultSetupData, MYGAME_NUMPLAYERS } from "game/game";
+import { MyGameState, defaultSetupData, MYGAME_NUMPLAYERS } from "game/game";
 
 type LeaveMatchParams = {
   gameName: string;
@@ -25,6 +24,11 @@ type JoinMatchOptions = {
   playerName: string;
   data?: any;
 };
+type CreateMatchOptions = {
+  setupData: MyGameState;
+  numPlayers: number;
+  unlisted?: boolean;
+};
 type LobbyMatches = {
   [gameName: string]: LobbyAPI.Match[];
 };
@@ -44,7 +48,7 @@ type BgioLobbyCtxValue = {
   // getMatch: (gameName: string, matchID: string) => Promise<LobbyAPI.Match>;
   // createMatch: (
   //   gameName: string,
-  //   createGameOptions: MyGameCreateMatchOptions
+  //   createGameOptions: CreateMatchOptions
   // ) => Promise<string | undefined>;
   // joinMatch: (params: JoinMatchParams) => Promise<string>;
   // leaveMatch: (params: LeaveMatchParams) => Promise<void>;
@@ -252,7 +256,7 @@ export function BgioLobbyProvider({
   }
   async function createMatch(
     gameName: string,
-    createGameOptions: MyGameCreateMatchOptions
+    createGameOptions: CreateMatchOptions
   ) {
     const { numPlayers, setupData, unlisted = false } = createGameOptions;
     try {

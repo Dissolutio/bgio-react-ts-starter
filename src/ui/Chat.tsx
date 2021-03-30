@@ -1,6 +1,6 @@
 import React from "react";
-import _ from "lodash";
-import { useBgioClientInfo, useBgioChat } from "contexts";
+import { uniqBy } from "lodash";
+import { useBgioClientInfo, useBgioChat } from "bgio-contexts";
 
 function generateChatID() {
   return Math.random()
@@ -46,7 +46,7 @@ export const ChatInput = () => {
 
 export const ChatList = () => {
   const chatCtxVal = useBgioChat();
-  const chatMessages = _.uniqBy(chatCtxVal.chatMessages, "id");
+  const chatMessages = uniqBy(chatCtxVal.chatMessages, "id");
   return (
     <ul style={{ listStyleType: "none" }}>
       {chatMessages.map((chat) => {

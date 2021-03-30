@@ -1,28 +1,19 @@
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  NavLink,
-} from "react-router-dom";
-
-import { BgioLobbyProvider, useBgioLobby } from "contexts/useBgioLobby";
-import { AuthProvider, useAuth } from "hooks/useAuth";
-import { ModalCtxProvider } from "hooks/useModalCtx";
-import { NewLobby } from "components/lobby/NewLobby";
-import { Login } from "components/lobby/Login";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import { Client } from "boardgame.io/react";
 import { Local, SocketIO } from "boardgame.io/multiplayer";
 import { Debug } from "boardgame.io/debug";
 
+import { BgioLobbyApiProvider } from "bgio-contexts";
+import { AuthProvider, useAuth } from "hooks/useAuth";
+import { NewLobby, MultiplayerLobbyProvider } from "lobby";
 import { myGame } from "./game/game";
 import { Board } from "./Board";
-import { MyModal } from "components/MyModal";
+import { MultiplayerNav } from "./Nav";
 
 // ! Three Options:
-// * Client that connects to its origin server `npm run build`
-// * Client that connects to a local server `npm run devstart`
 // * A local game (for game development) `npm run start`
+// * Client that connects to a local server `npm run devstart`
+// * Client that connects to its origin server `npm run build`
 
 const isDeploymentEnv = process.env.NODE_ENV === "production";
 const isDevEnv = process.env.NODE_ENV === "development";
@@ -51,25 +42,73 @@ const bgioClientOptions = {
   numPlayers: 2,
 };
 
-export const DemoGameClient = Client({
+const DemoGameClient = Client({
   ...bgioClientOptions,
   multiplayer: Local(),
   enhancer: reduxDevTools,
   debug: { impl: Debug },
 });
 
-export const MultiplayerGameClient = Client({
+const MultiplayerGameClient = Client({
   ...bgioClientOptions,
   multiplayer: SocketIO({ server: SERVER }),
+  debug: false,
 });
+
+export const App = () => {
+  if (isLocalApp) {
+    return <LocalApp />;
+  } else {
+    return (
+      <AuthProvider>
+        <BgioLobbyApiProvider serverAddress={SERVER}>
+          <MultiplayerLobbyProvider>
+            <BrowserRouter>
+              <Switch>
+                <Route exact path="/">
+                  <MultiplayerNav />
+                  <NewLobby />
+                </Route>
+                <Route path="/demo">
+                  <MultiplayerNav />
+                  <DemoGameClient matchID="matchID" playerID="0" />
+                </Route>
+                <Route path="/play">
+                  <MultiplayerNav />
+                  <PlayPage />
+                </Route>
+              </Switch>
+            </BrowserRouter>
+          </MultiplayerLobbyProvider>
+        </BgioLobbyApiProvider>
+      </AuthProvider>
+    );
+  }
+};
+
+const LocalApp = () => {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <DemoGameClient matchID="matchID" playerID="0" />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
+};
 
 const PlayPage = () => {
   const { storedCredentials } = useAuth();
   const { playerID, matchID, playerCredentials } = storedCredentials;
-  //TODO
-  // if (!playerID || !matchID || !playerCredentials) {
-  //   <h2>Sorry, you have not joined a game yet!</h2>;
-  // }
+  if (!playerID || !matchID || !playerCredentials) {
+    return (
+      <p>
+        You are not currently joined in a match.{" "}
+        <Link to="/">Return to Lobby?</Link>
+      </p>
+    );
+  }
   return (
     <MultiplayerGameClient
       matchID={matchID}
@@ -78,92 +117,3 @@ const PlayPage = () => {
     />
   );
 };
-
-export const App = () => {
-  if (isLocalApp) {
-    return <DemoGameClient matchID="matchID" playerID="0" />;
-  } else {
-    return (
-      <AuthProvider>
-        <BgioLobbyProvider serverAddress={SERVER}>
-          <ModalCtxProvider>
-            <BrowserRouter>
-              <AppInterior />
-            </BrowserRouter>
-          </ModalCtxProvider>
-        </BgioLobbyProvider>
-      </AuthProvider>
-    );
-  }
-};
-
-const AppInterior = () => {
-  const { joinedMatch } = useBgioLobby();
-  const isJoinedInMatch = Boolean(joinedMatch?.matchID);
-  return (
-    <>
-      <nav>
-        <ul>
-          <li>
-            <NavLink exact to="/">
-              Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/demo">Demo</NavLink>
-          </li>
-          <li>
-            <NavLink to="/lobby">Lobby</NavLink>
-          </li>
-          <li>
-            <NavLink to="/login">Login</NavLink>
-          </li>
-          {isJoinedInMatch ? (
-            <li>
-              <NavLink to="/play">Play</NavLink>
-            </li>
-          ) : null}
-        </ul>
-      </nav>
-      <Switch>
-        <Route exact path="/">
-          <NewLobby />
-        </Route>
-        <Route path="/demo">
-          <DemoGameClient matchID="matchID" playerID="0" />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <PrivateRoute path="/lobby">
-          <NewLobby />
-        </PrivateRoute>
-        <PrivateRoute path="/play">
-          <PlayPage />
-        </PrivateRoute>
-      </Switch>
-      <MyModal />
-    </>
-  );
-};
-
-function PrivateRoute({ children, ...rest }) {
-  const { isAuthenticated } = useAuth();
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        isAuthenticated ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
-}

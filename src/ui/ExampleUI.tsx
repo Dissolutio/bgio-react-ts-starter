@@ -1,4 +1,4 @@
-import { useBgioClientInfo, useBgioG } from "contexts";
+import { useBgioClientInfo, useBgioG } from "bgio-contexts";
 import { ChatInput, ChatList } from "./Chat";
 import { Controls } from "./Controls";
 

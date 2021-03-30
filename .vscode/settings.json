@@ -24,5 +24,15 @@
     "tab.activeBorder": "#983961",
     "titleBar.border": "#732b49"
   },
-  "peacock.color": "#732b49"
+  "peacock.color": "#732b49",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    ".history": true,
+    ".vscode": true
+  },
+  "explorerExclude.backup": null
 }

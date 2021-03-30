@@ -7,8 +7,8 @@ import {
   BgioEventsProvider,
   BgioCtxProvider,
   BgioChatProvider,
-} from "contexts";
-import { ExampleUI } from "./components/ExampleUI";
+} from "./bgio-contexts";
+import { ExampleUI } from "ui/example-ui/ExampleUI";
 
 type MyBoardProps = BoardProps & { chatMessages?: ChatMessage[] };
 

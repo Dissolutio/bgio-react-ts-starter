@@ -1,4 +1,4 @@
-import { useBgioCtx, useBgioMoves, useBgioEvents } from "contexts";
+import { useBgioCtx, useBgioMoves, useBgioEvents } from "bgio-contexts";
 
 export const Controls = () => {
   const { ctx } = useBgioCtx();

@@ -2,24 +2,10 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "hooks";
 import { useMultiplayerLobby } from "./useMultiplayerLobby";
-import { MyGameState } from "game/game";
 import { CreateMatchButton } from "./CreateMatchButton";
 import { SelectedGameMatchList, MatchListItem } from "./SelectedGameMatchList";
 import { GameSelect } from "./GameSelect";
 import { Login } from "./Login";
-
-export type LobbyMatchSetupData = {
-  lobbyDisplayName: string;
-};
-export type MyGameSetupData = MyGameState & LobbyMatchSetupData;
-
-export type MatchPlayerMetadata = {
-  id: number;
-  name?: string;
-  credentials?: string;
-  data?: any;
-  isConnected?: boolean;
-};
 
 export const MultiplayerLobby = () => {
   const {

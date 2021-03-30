@@ -1,20 +1,9 @@
-import { useAuth } from "hooks"
-import { Link, NavLink } from "react-router-dom"
-
-export const PageNav = () => {
-  return (
-    <nav>
-      <Link to={"/"}>Back to App</Link>
-      <Link to={"/help"}>Help</Link>
-      <Link to={"/rules"}>Rules</Link>
-      <Link to={"/feedback"}>Feedback</Link>
-    </nav>
-  )
-}
+import { useAuth } from "hooks";
+import { NavLink } from "react-router-dom";
 
 export const MultiplayerNav = () => {
-  const { storedCredentials } = useAuth()
-  const isJoinedInMatch = Boolean(storedCredentials.matchID)
+  const { storedCredentials } = useAuth();
+  const isJoinedInMatch = Boolean(storedCredentials.matchID);
   return (
     <nav>
       <ul>
@@ -33,5 +22,5 @@ export const MultiplayerNav = () => {
         ) : null}
       </ul>
     </nav>
-  )
-}
+  );
+};

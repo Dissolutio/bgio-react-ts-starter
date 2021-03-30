@@ -87,7 +87,7 @@ Runs the CRA app with a BGIO Local server setup, where the players are playing o
 
 Starts the CRA app but points the BGIO Client to a locally hosted BGIO Server.
 
-In a seperate terminal, you should run `npm run devserver`.
+In a separate terminal, you should run `npm run devserver`.
 
 ### `npm run devserver`
 

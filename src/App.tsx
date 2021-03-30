@@ -5,7 +5,7 @@ import { Debug } from "boardgame.io/debug";
 
 import { BgioLobbyApiProvider } from "bgio-contexts";
 import { AuthProvider, useAuth } from "hooks/useAuth";
-import { NewLobby, MultiplayerLobbyProvider } from "lobby";
+import { MultiplayerLobby, MultiplayerLobbyProvider } from "lobby";
 import { myGame } from "./game/game";
 import { Board } from "./Board";
 import { MultiplayerNav } from "./Nav";
@@ -67,7 +67,7 @@ export const App = () => {
               <Switch>
                 <Route exact path="/">
                   <MultiplayerNav />
-                  <NewLobby />
+                  <MultiplayerLobby />
                 </Route>
                 <Route path="/demo">
                   <MultiplayerNav />

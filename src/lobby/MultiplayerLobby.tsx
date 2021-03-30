@@ -1,27 +1,27 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
-import { useAuth } from "hooks"
-import { useMultiplayerLobby } from "./useMultiplayerLobby"
-import { MyGameState } from "game/game"
-import { CreateMatchButton } from "./CreateMatchButton"
-import { SelectedGameMatchList, MatchListItem } from "./SelectedGameMatchList"
-import { GameSelect } from "./GameSelect"
-import { Login } from "./Login"
+import { useAuth } from "hooks";
+import { useMultiplayerLobby } from "./useMultiplayerLobby";
+import { MyGameState } from "game/game";
+import { CreateMatchButton } from "./CreateMatchButton";
+import { SelectedGameMatchList, MatchListItem } from "./SelectedGameMatchList";
+import { GameSelect } from "./GameSelect";
+import { Login } from "./Login";
 
 export type LobbyMatchSetupData = {
-  lobbyDisplayName: string
-}
-export type MyGameSetupData = MyGameState & LobbyMatchSetupData
+  lobbyDisplayName: string;
+};
+export type MyGameSetupData = MyGameState & LobbyMatchSetupData;
 
 export type MatchPlayerMetadata = {
-  id: number
-  name?: string
-  credentials?: string
-  data?: any
-  isConnected?: boolean
-}
+  id: number;
+  name?: string;
+  credentials?: string;
+  data?: any;
+  isConnected?: boolean;
+};
 
-export const NewLobby = () => {
+export const MultiplayerLobby = () => {
   const {
     lobbyMatches,
     selectedGame,
@@ -31,14 +31,14 @@ export const NewLobby = () => {
     updateLobbyGames,
     handleLeaveJoinedMatch,
     handleVerifyJoinedMatch,
-  } = useMultiplayerLobby()
-  const { storedCredentials, isAuthenticated } = useAuth()
-  const joinedMatchID = storedCredentials?.matchID
-  const selectedGameMatches = lobbyMatches?.[selectedGame] ?? []
-  const numCurrentMatches = selectedGameMatches?.length ?? 0
+  } = useMultiplayerLobby();
+  const { storedCredentials, isAuthenticated } = useAuth();
+  const joinedMatchID = storedCredentials?.matchID;
+  const selectedGameMatches = lobbyMatches?.[selectedGame] ?? [];
+  const numCurrentMatches = selectedGameMatches?.length ?? 0;
   const joinedMatch = lobbyMatches?.[selectedGame]?.find(
     (m) => m.matchID === joinedMatchID
-  )
+  );
   // NAME REQUIRED FROM USER FIRST
   if (!isAuthenticated) {
     return (
@@ -46,7 +46,7 @@ export const NewLobby = () => {
         <p>Please choose a username in order to play multiplayer</p>
         <Login />
       </>
-    )
+    );
   }
   return (
     <>
@@ -118,5 +118,5 @@ export const NewLobby = () => {
         </>
       )}
     </>
-  )
-}
+  );
+};

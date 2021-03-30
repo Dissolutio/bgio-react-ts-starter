@@ -2,6 +2,7 @@
   - [Overview](#overview)
     - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
       - [List of BGIO Contexts](#list-of-bgio-contexts)
+  - [The useAuth hook](#the-useauth-hook)
     - [React-Router-Dom is included](#react-router-dom-is-included)
     - [`server/` is a compiled directory - don't use it](#server-is-a-compiled-directory---dont-use-it)
     - [CSS / UI Library used: water.css](#css--ui-library-used-watercss)
@@ -38,13 +39,21 @@ The Board in our project splits the BoardProps up into different contexts, and w
 4. useMoves -- includes your game moves, as well as `undo` and `redo` from BGIO
 5. useBgioChat -- access chats, send new ones
 6. useBgioClientInfo -- for now, this is a little bit of a catch all, but it includes these BGIO Client related props: `playerID` `log` `matchID` `matchData` `isActive` `isMultiplayer` `isConnected` `credentials`
-7. useBgioLobby -- UNDER CONSTRUCTION, access the BGIO `LobbyClient` object and interact with BGIO Lobby/Server API
+7. useBgioLobbyApi -- instantiates the BGIO `LobbyClient` object and provides the [BGIO Lobby/Server API](https://boardgame.io/documentation/#/api/Lobby) as a context hook
+8. useMultiplayerLobby -- this context maintains the lobby state, and manages/provides the asynchronous flows that implement the useBgioLobbyApi hook
 
-See the simple files in `src/components` for examples on how to use the hooks.
+If you want your lobby to have a different flow, you'll be editing the `useMultiplayerLobby`, but the `useBgioLobbyApi` hook is more tethered to the shape of the BGIO API and less likely to need changing.
+
+Checkout some of the components in `src/lobby/` or `src/ui/` for some examples on how to use the hooks.
+
+## The useAuth hook
+
+The `useMultiplayerLobby` hook uses the useAuth hook to hold the players current match, credentials, and name in memory.
+There's two storage hooks in the folder with `useAuth`, and by default I have commented out the implementation of `useLocalStorage` and left `useSessionStorage` in place. The advantage is for when you are developing, you can start up the local client and server, then play against yourself in two different browser tabs. On the flipside, once you've deployed your app, maybe you want user's data to sync across tabs/windows/sessions. In that case, you would want to go into `useAuth` and flip which code is commented out.
 
 ### React-Router-Dom is included
 
-This is not a requirement of of BGIO, so feel free to remove it, but this project's Lobby component will likely not be of service anymore (too heavily integrated).
+This is not a requirement of BGIO, so feel free to remove it, but this project's `MultiplayerLobby`, `App`, and `Nav` components will need a refactor.
 
 ### `server/` is a compiled directory - don't use it
 
@@ -103,6 +112,9 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 Also see the [BGIO docs on deployment](https://boardgame.io/documentation/#/deployment).
+
+I personally add a `Procfile` to the project root with contents: `web: node -r esm server.js` and the whole repo is off to Heroku for deployment.
+One thing that's easy to get snagged on is if the game files do not get compiled in the right shape, then the server file won't import them correctly and your build will succeed even though your logs will tell you why your deploy isn't working (server.js can't find an import)
 
 ### `npm run server`
 

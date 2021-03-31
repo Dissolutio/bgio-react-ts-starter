@@ -2,7 +2,7 @@
   - [Overview](#overview)
     - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
       - [List of BGIO Contexts](#list-of-bgio-contexts)
-  - [The useAuth hook](#the-useauth-hook)
+    - [The useAuth hook](#the-useauth-hook)
     - [React-Router-Dom is included](#react-router-dom-is-included)
     - [`server/` is a compiled directory - don't use it](#server-is-a-compiled-directory---dont-use-it)
     - [CSS / UI Library used: water.css](#css--ui-library-used-watercss)
@@ -46,7 +46,7 @@ If you want your lobby to have a different flow, you'll be editing the `useMulti
 
 Checkout some of the components in `src/lobby/` or `src/ui/` for some examples on how to use the hooks.
 
-## The useAuth hook
+### The useAuth hook
 
 The `useMultiplayerLobby` hook uses the useAuth hook to hold the players current match, credentials, and name in memory.
 There's two storage hooks in the folder with `useAuth`, and by default I have commented out the implementation of `useLocalStorage` and left `useSessionStorage` in place. The advantage is for when you are developing, you can start up the local client and server, then play against yourself in two different browser tabs. On the flipside, once you've deployed your app, maybe you want user's data to sync across tabs/windows/sessions. In that case, you would want to go into `useAuth` and flip which code is commented out.

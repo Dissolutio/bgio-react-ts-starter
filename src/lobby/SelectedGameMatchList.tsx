@@ -10,12 +10,12 @@ export function SelectedGameMatchList() {
     lobbyMatches,
     updateLobbyMatchesForSelectedGame,
   } = useMultiplayerLobby();
-  async function handleRefreshButton(e) {
-    updateLobbyMatchesForSelectedGame();
-  }
   const selectedGameMatches = lobbyMatches?.[selectedGame] ?? [];
   // the BGIO server often returns duplicate matches, unsure why
   const matches = uniqBy(selectedGameMatches, "matchID");
+  async function handleRefreshButton(e) {
+    updateLobbyMatchesForSelectedGame();
+  }
   return (
     <>
       <button onClick={handleRefreshButton}>{`Refresh`}</button>

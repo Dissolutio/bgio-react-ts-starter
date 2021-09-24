@@ -1,4 +1,4 @@
-import { LobbyAPI } from "boardgame.io";
+import { LobbyAPI, Server } from "boardgame.io";
 import { uniqBy } from "lodash";
 
 import { useAuth } from "hooks";
@@ -55,14 +55,6 @@ const MatchesList = ({ matches }) => {
   return isError ? null : <p>No current matches!</p>;
 };
 
-// putting this type here, boardgame.io's LobbyAPI.Match has a PublicPlayerMetadata type that isn't exported for us at this time
-export type MatchPlayerMetadata = {
-  id: number;
-  name?: string;
-  credentials?: string;
-  data?: any;
-  isConnected?: boolean;
-};
 export const MatchListItem = (props: { match?: LobbyAPI.Match }) => {
   if (!props.match) {
     return null;
@@ -94,7 +86,7 @@ export const MatchListItem = (props: { match?: LobbyAPI.Match }) => {
 };
 
 const MatchPlayersList = (props: {
-  players: MatchPlayerMetadata[];
+  players: Server.PlayerMetadata[];
   matchID: string;
 }) => {
   const { players, matchID } = props;

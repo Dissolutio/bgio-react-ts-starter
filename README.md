@@ -40,19 +40,19 @@ re-renders.
 
 #### List of BGIO Contexts
 
-1. useBgioG -- access the BGIO `G` object
-2. useBgioCtx -- access the BGIO `ctx` object
-3. useBgioEvents -- access BGIO game `events` as well as the `reset` action
-4. useBgioMoves -- includes your game moves, as well as `undo` and `redo` from
+1. `useBgioG` -- access the BGIO `G` object
+2. `useBgioCtx` -- access the BGIO `ctx` object
+3. `useBgioEvents` -- access BGIO game `events` as well as the `reset` action
+4. `useBgioMoves` -- includes your game moves, as well as `undo` and `redo` from
    BGIO
-5. useBgioChat -- access chats, send new ones
-6. useBgioClientInfo -- for now, this is a little bit of a catch all, but it
+5. `useBgioChat` -- access chats, send new ones
+6. `useBgioClientInfo` -- for now, this is a little bit of a catch all, but it
    includes these BGIO Client related props: `playerID` `log` `matchID`
    `matchData` `isActive` `isMultiplayer` `isConnected` `credentials`
-7. useBgioLobbyApi -- instantiates the BGIO `LobbyClient` object and provides
+7. `useBgioLobbyApi` -- instantiates the BGIO `LobbyClient` object and provides
    the [BGIO Lobby/Server API](https://boardgame.io/documentation/#/api/Lobby)
    as a context hook
-8. useMultiplayerLobby -- this context maintains the lobby state, and
+8. `useMultiplayerLobby` -- this context maintains the lobby state, and
    manages/provides the asynchronous flows that implement the useBgioLobbyApi
    hook
 

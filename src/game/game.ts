@@ -1,3 +1,5 @@
+import { increaseScore } from "./moves";
+
 export type MyGameState = {
   score: {
     [playerID: string]: number;
@@ -39,9 +41,3 @@ export const myOtherGame = {
   minPlayers: 2,
   maxPlayers: 2,
 };
-
-function increaseScore(G, ctx) {
-  const { currentPlayer } = ctx;
-  const currentScore = G.score[currentPlayer];
-  G.score[`${currentPlayer}`] = currentScore + 1;
-}

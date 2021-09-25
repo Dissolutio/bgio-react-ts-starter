@@ -6,7 +6,7 @@ type BgioClientInfo = {
   playerID: string;
   log: BoardProps["log"];
   matchID: string;
-  matchData: Server.PlayerMetadata[];
+  matchData: Server.PlayerMetadata[] | undefined; // An array containing the players that have joined the current match via the Lobby API
   isActive: boolean;
   isMultiplayer: boolean;
   isConnected: boolean;

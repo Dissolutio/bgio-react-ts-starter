@@ -3,7 +3,7 @@ import { ChatInput, ChatList } from "./Chat";
 import { Controls } from "./Controls";
 
 export const ExampleUI = () => {
-  const { playerID, matchData } = useBgioClientInfo();
+  const { playerID } = useBgioClientInfo();
   const { G } = useBgioG();
   return (
     <div>
@@ -11,30 +11,42 @@ export const ExampleUI = () => {
       <p>{`Player 0 score: ${G?.score["0"] ?? ""}`}</p>
       <p>{`Player 1 score: ${G?.score["1"] ?? ""}`}</p>
       <Controls />
-      {matchData && (
-        <>
-          <h3>Opponents</h3>
-          <ul>
-            {matchData.map((playerSlot) => {
-              const { id } = playerSlot;
-              const playerName = playerSlot?.name ?? "";
-              const isConnected = playerSlot?.isConnected ?? false;
-              return playerName ? (
-                <li>
-                  Player-{id}: <span>{playerName}</span>
-                </li>
-              ) : (
-                <li>
-                  Player-{id}: <span>No player yet</span>
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+      <MultiplayerMatchPlayerList />
       <h3>Chats</h3>
       <ChatList />
       <ChatInput />
     </div>
   );
+};
+
+const MultiplayerMatchPlayerList = () => {
+  const { matchData, isMultiplayer, matchID, isConnected } =
+    useBgioClientInfo();
+  console.log(
+    `🚀 ~ MultiplayerMatchPlayerList ~ matchID, isConnected`,
+    matchID,
+    isConnected
+  );
+  return matchData ? (
+    <>
+      <h3>PlayerList</h3>
+      <ul>
+        {matchData.map((playerSlot) => {
+          const { id } = playerSlot;
+          const playerName = playerSlot?.name ?? "";
+          const isConnected = playerSlot?.isConnected ?? false;
+          const color = isConnected ? "green" : "red";
+          return playerName ? (
+            <li key={id} style={{ color }}>
+              Player-{id}: <span>{playerName}</span>
+            </li>
+          ) : (
+            <li key={id} style={{ color }}>
+              Player-{id}: <span>No player yet</span>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  ) : null;
 };

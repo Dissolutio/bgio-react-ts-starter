@@ -1,3 +1,4 @@
+import { Server } from "boardgame.io";
 import { BoardProps } from "boardgame.io/react";
 import * as React from "react";
 
@@ -5,7 +6,7 @@ type BgioClientInfo = {
   playerID: string;
   log: BoardProps["log"];
   matchID: string;
-  matchData: any[];
+  matchData: Server.PlayerMetadata[];
   isActive: boolean;
   isMultiplayer: boolean;
   isConnected: boolean;

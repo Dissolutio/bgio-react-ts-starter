@@ -20,13 +20,8 @@ export const ExampleUI = () => {
 };
 
 const MultiplayerMatchPlayerList = () => {
-  const { matchData, isMultiplayer, matchID, isConnected } =
-    useBgioClientInfo();
-  console.log(
-    `🚀 ~ MultiplayerMatchPlayerList ~ matchID, isConnected`,
-    matchID,
-    isConnected
-  );
+  const { matchData } = useBgioClientInfo();
+
   return matchData ? (
     <>
       <h3>PlayerList</h3>

@@ -43,7 +43,8 @@ re-renders.
 1. useBgioG -- access the BGIO `G` object
 2. useBgioCtx -- access the BGIO `ctx` object
 3. useBgioEvents -- access BGIO game `events` as well as the `reset` action
-4. useMoves -- includes your game moves, as well as `undo` and `redo` from BGIO
+4. useBgioMoves -- includes your game moves, as well as `undo` and `redo` from
+   BGIO
 5. useBgioChat -- access chats, send new ones
 6. useBgioClientInfo -- for now, this is a little bit of a catch all, but it
    includes these BGIO Client related props: `playerID` `log` `matchID`
@@ -72,7 +73,7 @@ when you are developing, you can start up the local client and server, then play
 against yourself in two different browser tabs. On the flipside, once you've
 deployed your app, maybe you want user's data to sync across
 tabs/windows/sessions. In that case, you would want to go into `useAuth` and
-flip which code is commented out.
+implement `useLocalStorage`.
 
 ### React-Router-Dom is included
 

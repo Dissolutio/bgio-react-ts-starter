@@ -1,5 +1,6 @@
 - [Boardgame.io React TypeScript Starter](#boardgameio-react-typescript-starter)
-  - [Overview](#overview)
+  - [How to copy bgio-react-ts-starter](#how-to-copy-bgio-react-ts-starter)
+  - [Project Structure](#project-structure)
     - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
       - [List of BGIO Contexts](#list-of-bgio-contexts)
     - [The useAuth hook](#the-useauth-hook)
@@ -24,7 +25,31 @@ This is a React app built with
 comes with some simple commands to get up and running, and some React hooks that
 expose the BGIO props a little more easily. Have fun!
 
-## Overview
+## How to copy bgio-react-ts-starter
+
+1. `npx create-react-app YOUR_PROJECT_NAME --template typescript`
+2. `npm install boardgame.io esm koa-mount koa-static react-helmet react-router-dom`
+3. `npm install --save-dev @types/koa-static nodemon npm-run-all watch @types/react-router-dom`
+4. `npm install --save-dev eslint prettier`
+
+Then copy these into the scripts section of your `package.json`:
+
+```
+"start": "react-scripts start",
+"devstart": "REACT_APP_WITH_SEPARATE_SERVER=1 npm start",
+"devserver": "run-p nodemon-devserver compile-game-files:watch",
+"build": "npm-run-all --continue-on-error compile-game-files cra-build",
+"server": "node -r esm server.js",
+"cra-build": "react-scripts build",
+"compile-game-files": "tsc ./src/game/*.ts --outDir ./server --downlevelIteration true --skipLibCheck true",
+"compile-game-files:watch": "watch 'npm run compile-game-files' ./src/game",
+"nodemon-devserver": "nodemon --delay 1 --watch ./server -r esm devserver.js",
+"format": "prettier --write 'src/**/*.js' '**/*.json' 'src/**/*.ts' 'src/**/*.tsx' 'server.js' 'devserver.js'",
+"test": "react-scripts test",
+"eject": "react-scripts eject"
+```
+
+## Project Structure
 
 Here are some concepts to help understand the project:
 

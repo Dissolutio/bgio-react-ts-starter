@@ -13,11 +13,11 @@ export const ChatInput = () => {
   const [chatInputText, setChatInputText] = React.useState("");
   const { sendChatMessage } = useBgioChat();
   const { playerID } = useBgioClientInfo();
-  const handleChatInputChange = (e) => {
+  const handleChatInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setChatInputText(e.target.value);
   };
-  const handleChatSubmit = async (e) => {
-    e.preventDefault(e);
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     sendChatMessage({
       sender: playerID,
       id: generateChatID(),

@@ -7,11 +7,11 @@ import { useSessionStorage } from "./useSessionStorage";
 const localStorageKey_bgioCredentials = "bgio-player-credentials";
 
 type StoredCredentials = {
-  playerName?: string;
-  matchID?: string;
-  gameName?: string;
-  playerCredentials?: string;
-  playerID?: string;
+  playerName: string;
+  matchID: string;
+  gameName: string;
+  playerCredentials: string;
+  playerID: string;
 };
 const initialCredentials: StoredCredentials = {
   playerName: "",

@@ -18,7 +18,7 @@ import { MultiplayerNav } from "./Nav";
 const isDeploymentEnv = process.env.NODE_ENV === "production";
 const isDevEnv = process.env.NODE_ENV === "development";
 const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER);
-const isLocalApp = isDevEnv && !isSeparateServer;
+export const isLocalApp = isDevEnv && !isSeparateServer;
 
 // use appropriate address for server
 const hostname = window?.location?.hostname ?? "";

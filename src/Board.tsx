@@ -41,10 +41,10 @@ export function Board(props: MyBoardProps) {
   return (
     <BgioClientInfoProvider
       log={log}
-      playerID={playerID}
+      playerID={playerID || ""}
       matchID={matchID}
       matchData={matchData}
-      credentials={credentials}
+      credentials={credentials || ""}
       isMultiplayer={isMultiplayer}
       isConnected={isConnected}
       isActive={isActive}

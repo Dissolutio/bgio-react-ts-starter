@@ -2,7 +2,7 @@ import { useBgioClientInfo, useBgioG } from "bgio-contexts";
 import { LeaveJoinedMatchButton } from "lobby/LeaveJoinedMatchButton";
 import { ChatInput, ChatList } from "./Chat";
 import { Controls } from "./Controls";
-
+import { isLocalApp } from "App";
 export const ExampleUI = () => {
   const { playerID } = useBgioClientInfo();
   const { G } = useBgioG();
@@ -13,7 +13,7 @@ export const ExampleUI = () => {
       <p>{`Player 1 score: ${G?.score["1"] ?? ""}`}</p>
       <Controls />
       <MultiplayerMatchPlayerList />
-      <LeaveJoinedMatchButton />
+      {!isLocalApp && <LeaveJoinedMatchButton />}
       <h3>Chats</h3>
       <ChatList />
       <ChatInput />

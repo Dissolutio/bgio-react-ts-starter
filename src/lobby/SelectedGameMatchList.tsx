@@ -5,15 +5,12 @@ import { useAuth } from "hooks";
 import { useMultiplayerLobby } from "./useMultiplayerLobby";
 
 export function SelectedGameMatchList() {
-  const {
-    selectedGame,
-    lobbyMatches,
-    updateLobbyMatchesForSelectedGame,
-  } = useMultiplayerLobby();
+  const { selectedGame, lobbyMatches, updateLobbyMatchesForSelectedGame } =
+    useMultiplayerLobby();
   const selectedGameMatches = lobbyMatches?.[selectedGame] ?? [];
   // the BGIO server often returns duplicate matches, unsure why
   const matches = uniqBy(selectedGameMatches, "matchID");
-  async function handleRefreshButton(e) {
+  async function handleRefreshButton(e: React.MouseEvent) {
     updateLobbyMatchesForSelectedGame();
   }
   return (
@@ -38,7 +35,7 @@ const MatchesError = () => {
   return null;
 };
 
-const MatchesList = ({ matches }) => {
+const MatchesList = ({ matches }: { matches: LobbyAPI.Match[] }) => {
   const { lobbyMatchesError, selectedGame } = useMultiplayerLobby();
   const isError = lobbyMatchesError?.[selectedGame];
   const isMatches = matches.length > 0;
@@ -59,14 +56,8 @@ export const MatchListItem = (props: { match?: LobbyAPI.Match }) => {
   if (!props.match) {
     return null;
   }
-  const {
-    matchID,
-    createdAt,
-    gameName,
-    players,
-    unlisted,
-    updatedAt,
-  } = props.match;
+  const { matchID, createdAt, gameName, players, unlisted, updatedAt } =
+    props.match;
   return (
     <details>
       <summary>Match ID: {matchID}</summary>

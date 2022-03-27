@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
-    "strict": false,
+    "strict": true,
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "moduleResolution": "node",
     "module": "esnext",
     "jsx": "react-jsx",
@@ -22,7 +18,5 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

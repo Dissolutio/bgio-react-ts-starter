@@ -1,26 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
-import { useAuth } from "hooks"
+import { useAuth } from "hooks";
 
 export const Login = () => {
-  const [inputText, setInputText] = useState("")
-  const handleTextInputChange = (e) => {
-    setInputText(e.target.value)
-  }
-  const { isAuthenticated, storedCredentials, signin, signout } = useAuth()
-  const isNameChanged = inputText !== storedCredentials.playerName
+  const [inputText, setInputText] = useState("");
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+  };
+  const { isAuthenticated, storedCredentials, signin, signout } = useAuth();
+  const isNameChanged = inputText !== storedCredentials.playerName;
 
   // effect -- auto-fill input on auth change
   useEffect(() => {
-    setInputText(storedCredentials.playerName)
-  }, [storedCredentials])
+    setInputText(storedCredentials?.playerName ?? "");
+  }, [storedCredentials]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    signin(inputText)
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    signin(inputText);
+  };
 
-  const inputHtmlId = `playerName`
+  const inputHtmlId = `playerName`;
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -49,5 +49,5 @@ export const Login = () => {
         </p>
       )}
     </>
-  )
-}
+  );
+};

@@ -14,15 +14,9 @@
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#732b4999",
     "titleBar.inactiveForeground": "#e7e7e799",
-    "editorGroup.border": "#983961",
-    "panel.border": "#983961",
-    "sideBar.border": "#983961",
-    "statusBar.border": "#732b49",
-    "statusBar.debuggingBackground": "#2b7355",
-    "statusBar.debuggingBorder": "#2b7355",
-    "statusBar.debuggingForeground": "#e7e7e7",
-    "tab.activeBorder": "#983961",
-    "titleBar.border": "#732b49"
+    "sash.hoverBorder": "#983961",
+    "statusBarItem.remoteBackground": "#732b49",
+    "statusBarItem.remoteForeground": "#e7e7e7"
   },
   "peacock.color": "#732b49",
   "files.exclude": {

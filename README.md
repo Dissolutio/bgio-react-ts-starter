@@ -1,5 +1,5 @@
 - [Boardgame.io React TypeScript Starter](#boardgameio-react-typescript-starter)
-  - [How to copy bgio-react-ts-starter](#how-to-copy-bgio-react-ts-starter)
+  - [How to copy bgio-react-ts-starter pattern:](#how-to-copy-bgio-react-ts-starter-pattern)
   - [Project Structure](#project-structure)
     - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
       - [List of BGIO Contexts](#list-of-bgio-contexts)
@@ -25,8 +25,15 @@ This is a React app built with
 comes with some simple commands to get up and running, and some React hooks that
 expose the BGIO props a little more easily. Have fun!
 
-## How to copy bgio-react-ts-starter
+## How to copy bgio-react-ts-starter pattern:
 
+The idea is that we want to be able to:
+- Run the game in local mode, where there is no multiplayer, it's pass and play, all clients on one device/screen. This is purely for ease / speed of development.
+  - This is done with 1 shell, running `npm run start`
+- Run the game in local-multiplayer mode, and also run a server locally for our client to talk to (so we can open several browser tabs of our client and simulate multiple players interacting with server/each other)
+  - This is done with 2 shells, 1 running `npm run devstart` and 1 running `npm run devserver`
+- Run the server in deployed mode, where it serves up the client app and the client app talks back to it.
+  - This is done with 1 shell, running `npm run build` and then running `npm run server` after the build is complete
 1. `npx create-react-app YOUR_PROJECT_NAME --template typescript`
 2. `npm install boardgame.io esm koa-mount koa-static react-helmet react-router-dom`
 3. `npm install --save-dev @types/koa-static nodemon npm-run-all watch @types/react-router-dom`

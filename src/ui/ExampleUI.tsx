@@ -1,8 +1,9 @@
 import { useBgioClientInfo, useBgioG } from "bgio-contexts";
+import { isLocalApp } from "../constants";
 import { LeaveJoinedMatchButton } from "lobby/LeaveJoinedMatchButton";
 import { ChatInput, ChatList } from "./Chat";
 import { Controls } from "./Controls";
-import { isLocalApp } from "App";
+
 export const ExampleUI = () => {
   const { playerID } = useBgioClientInfo();
   const { G } = useBgioG();

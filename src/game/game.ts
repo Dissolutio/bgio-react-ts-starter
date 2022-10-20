@@ -17,6 +17,7 @@ export const MYGAME_NUMPLAYERS = 2;
 export const myGame: Game<MyGameState> = {
   name: "myGame",
   setup: (ctx, setupData) => {
+    console.log("🚀 ~ file: game.ts ~ line 20 ~ setupData", setupData)
     const myG = {
       ...defaultSetupData,
       ...setupData,

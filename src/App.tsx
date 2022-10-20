@@ -9,26 +9,8 @@ import { MultiplayerLobby, MultiplayerLobbyProvider } from "lobby";
 import { myGame } from "./game/game";
 import { Board } from "./Board";
 import { MultiplayerNav } from "./Nav";
+import { isLocalApp, SERVER } from "./constants";
 
-// ! Three Options:
-// * A local game (for game development) `npm run start`
-// * Client that connects to a local server `npm run devstart`
-// * Client that connects to its origin server `npm run build`
-
-const isDeploymentEnv = process.env.NODE_ENV === "production";
-const isDevEnv = process.env.NODE_ENV === "development";
-const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER);
-export const isLocalApp = isDevEnv && !isSeparateServer;
-
-// use appropriate address for server
-const hostname = window?.location?.hostname ?? "";
-const protocol = window?.location?.protocol ?? "";
-const port = window?.location?.port ?? "";
-const deploymentServerAddr = `${protocol}//${hostname}${
-  port ? `:${port}` : ``
-}`;
-const localServerAddr = `http://localhost:8000`;
-const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr;
 
 // Enable Redux DevTools in development
 const reduxDevTools =

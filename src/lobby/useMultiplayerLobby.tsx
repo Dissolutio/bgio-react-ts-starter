@@ -52,6 +52,7 @@ export function MultiplayerLobbyProvider({
     updatePlayer,
   } = useBgioLobbyApi();
   const joinedMatchID = storedCredentials?.matchID;
+  console.log("🚀 ~ file: useMultiplayerLobby.tsx ~ line 55 ~ joinedMatchID", joinedMatchID)
 
   // STATE
   const [lobbyGames, setLobbyGames] = useState<string[]>([]);
@@ -100,7 +101,7 @@ export function MultiplayerLobbyProvider({
       }
     } catch (error: any) {
       setLobbyGamesError(error?.message ?? "error fetching lobby games");
-      console.log(`🚀 ~ getLobbyGames ~ error`, error);
+      console.error(`🚀 ~ getLobbyGames ~ error`, error);
     }
   }
   async function updateLobbyMatchesForSelectedGame() {
